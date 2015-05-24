@@ -8,6 +8,7 @@
 EntityMesh::EntityMesh(std::string name) : Entity(name)
 {
 	this->frustum_culling = true;
+	this->depth_test = true;
 }
 
 EntityMesh::~EntityMesh()
@@ -18,24 +19,20 @@ EntityMesh::~EntityMesh()
 void EntityMesh::processEvent(std::string name, void* data)
 {
 	if(name.compare("render") == 0){
-		if(!this->frustum_culling || Game::world->clipper->PointInFrustum(this->model.m[12],this->model.m[13],this->model.m[14]))
+		if(!this->frustum_culling || Game::getInstance()->world->clipper->PointInFrustum(this->model.m[12],this->model.m[13],this->model.m[14]))
 		{
 			Mesh* _m = Mesh::load(mesh.c_str());
+			Shader* _s = Shader::Load(shader.c_str());
 			Texture* _t = Texture::load(texture.c_str());
-			Matrix44 mvp = this->getGlobalMatrix() * Game::world->camera->viewprojection_matrix;
-			glBindTexture(GL_TEXTURE_2D, _t->texture_id);
-			shader->enable();
-			shader->setMatrix44("u_model", this->model );
-			shader->setMatrix44("u_mvp", mvp );
-			shader->setTexture("u_texture", _t->texture_id);
-			_m->renderVBO(GL_TRIANGLES, shader);
-			shader->disable();
-			glBindTexture(GL_TEXTURE_2D, _t->texture_id);
+			Matrix44 mvp = this->getGlobalMatrix() * Game::getInstance()->world->camera->viewprojection_matrix;
+			_s->enable();
+			_s->setMatrix44("u_model", this->model );
+			_s->setMatrix44("u_mvp", mvp );
+			_s->setTexture("u_texture", _t->texture_id);
+			_m->render(GL_TRIANGLES, _s);
+			_s->disable();
 		}
-	}/*else if(name.compare("update") == 0){
-		double delta = *((double*)data);
-		this->model.rotateLocal(5 * DEG2RAD * delta, Vector3(0,1,0));
-	}*/
+	}
 	//Entity::processEvent(name, data);
 }
 
@@ -49,7 +46,7 @@ void EntityMesh::setTexture(std::string texture)
 	this->texture = texture;
 }
 
-void EntityMesh::setShader(Shader* shader)
+void EntityMesh::setShader(std::string shader)
 {
 	this->shader = shader;
 }

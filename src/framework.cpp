@@ -12,7 +12,7 @@
 //**************************************
 float Vector2::distance(const Vector2& v)
 {
-	return (v - *this).length();
+	return float((v - *this).length());
 }
 
 float Vector2::dot( const Vector2& v )
@@ -28,8 +28,8 @@ float Vector2::perpdot( const Vector2& v )
 void Vector2::random(float range)
 {
 	//rand returns a value between 0 and RAND_MAX
-	x = (rand() / (double)RAND_MAX) * 2 * range - range; //value between -range and range
-	y = (rand() / (double)RAND_MAX) * 2 * range - range; //value between -range and range
+	x = (rand() / (float)RAND_MAX) * 2.0f * range - range; //value between -range and range
+	y = (rand() / (float)RAND_MAX) * 2.0f * range - range; //value between -range and range
 }
 
 
@@ -53,15 +53,15 @@ double Vector3::length() const
 Vector3& Vector3::normalize()
 {
 	double len = length();
-	x /= len;
-	y /= len;
-	z /= len;
+	x = float(x / len);
+	y = float(y / len);
+	z = float(z / len);
 	return *this;
 }
 
 float Vector3::distance(const Vector3& v) const
 {
-	return (v - *this).length();
+	return float((v - *this).length());
 }
 
 Vector3 Vector3::cross( const Vector3& b ) const
@@ -77,17 +77,17 @@ float Vector3::dot( const Vector3& v ) const
 void Vector3::random(float range)
 {
 	//rand returns a value between 0 and RAND_MAX
-	x = (rand() / (double)RAND_MAX) * 2 * range - range; //value between -range and range
-	y = (rand() / (double)RAND_MAX) * 2 * range - range; //value between -range and range
-	z = (rand() / (double)RAND_MAX) * 2 * range - range; //value between -range and range
+	x = (rand() / (float)RAND_MAX) * 2.0f * range - range; //value between -range and range
+	y = (rand() / (float)RAND_MAX) * 2.0f * range - range; //value between -range and range
+	z = (rand() / (float)RAND_MAX) * 2.0f * range - range; //value between -range and range
 }
 
 void Vector3::random(Vector3 range)
 {
 	//rand returns a value between 0 and RAND_MAX
-	x = (rand() / (double)RAND_MAX) * 2 * range.x - range.x; //value between -range and range
-	y = (rand() / (double)RAND_MAX) * 2 * range.y - range.y; //value between -range and range
-	z = (rand() / (double)RAND_MAX) * 2 * range.z - range.z; //value between -range and range
+	x = (rand() / (float)RAND_MAX) * 2.0f * range.x - range.x; //value between -range and range
+	y = (rand() / (float)RAND_MAX) * 2.0f * range.y - range.y; //value between -range and range
+	z = (rand() / (float)RAND_MAX) * 2.0f * range.z - range.z; //value between -range and range
 }
 
 //*********************************
@@ -252,7 +252,7 @@ void Matrix44::perspective(float fov, float aspect, float near_plane, float far_
 {
 	setIdentity();
 
-	float f = 1.0f / tan( fov * DEG2RAD * 0.5f );
+	float f = 1.0f / tan( fov * float(DEG2RAD) * 0.5f );
 
 	M[0][0] = f / aspect;
 	M[1][1] = f;
@@ -266,11 +266,11 @@ void Matrix44::ortho(float left, float right, float bottom, float top, float nea
 {
 	clear();
 	M[0][0] = 2.0f / (right - left);
-	M[0][3] = - (right + left) / (right - left);
+	M[3][0] = - (right + left) / (right - left);
 	M[1][1] = 2.0f / (top - bottom); 
-	M[1][3] = -(top + bottom) / (top - bottom);
+	M[3][1] = -(top + bottom) / (top - bottom);
 	M[2][2] = -2.0f / (far_plane - near_plane);
-	M[2][3] = (far_plane + near_plane) / (far_plane - near_plane);
+	M[3][2] = (far_plane + near_plane) / (far_plane - near_plane);
 	M[3][3] = 1.0f;
 }
 
@@ -282,7 +282,7 @@ Vector3 Matrix44::project(const Vector3& v)
 	float z = m[2] * v.x + m[6] * v.y + m[10] * v.z + m[14];
 	float w = m[3] * v.x + m[7] * v.y + m[11] * v.z + m[15];
 
-	return Vector3( (x / w + 1.0) / 2.0f, (y / w + 1.0f) / 2.0f,  (z / w + 1.0) / 2.0f );
+	return Vector3( (x / w + 1.0f) / 2.0f, (y / w + 1.0f) / 2.0f,  (z / w + 1.0f) / 2.0f );
 }
 
 bool Matrix44::getXYZ(float* euler) const
@@ -532,6 +532,6 @@ Vector3 RayPlaneCollision( const Vector3& plane_pos, const Vector3& plane_normal
     double D = plane_pos.dot(plane_normal);
     double numer = plane_normal.dot(ray_origin) + D;
     double denom = plane_normal.dot(ray_dir);
-    double t = -(numer / denom);
+    float t = -(numer / denom);
 	return ray_origin + ray_dir * t;
 }

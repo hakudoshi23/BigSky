@@ -84,7 +84,7 @@ public:
 	bool hasInfoLog() const;
 	bool compiled;
 
-	static Shader* Load(const char* vsf, const char* psf);
+	static Shader* Load(const char* name);
 	static void ReloadAll();
 	static std::map<std::string,Shader*> s_Shaders;
 

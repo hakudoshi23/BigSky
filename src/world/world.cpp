@@ -4,13 +4,15 @@
 #include "../texture.h"
 #include "../shader.h"
 
+#include "../entity/entityFactory.h"
 #include "../entity/entityMesh.h"
-#include "../entity/entitySkybox.h"
+#include "../entity/entitySky.h"
 
 #include <cmath>
 
 World::World() : Entity("world")
 {
+	this->controller = new Controller();
 	this->clipper = new Clipper();
 	this->terrain = NULL;
 	this->skybox = NULL;
@@ -28,36 +30,35 @@ void World::setCamera(Camera* camera)
 
 void World::init()
 {
-	Shader* shader = new Shader();
-	if( !shader->load("data/shaders/simple.vs","data/shaders/simple.fs") )
-	{
-		std::cout << "shader not found or error" << std::endl;
-		exit(0);
-	}
-
-	this->skybox = new EntitySkybox();
-	this->skybox->setMesh("data/mesh/skybox/cubemap.ASE");
-	this->skybox->setTexture("data/mesh/skybox/cielo.tga");
-	this->skybox->setShader(shader);
+	this->skybox = EntityFactory::newSky();
 	this->addChild(this->skybox);
 
-	this->terrain = new EntityMesh("terrain");
-	this->terrain->setMesh("data/mesh/island/island.ASE");
-	this->terrain->setTexture("data/mesh/island/island_color.tga");
-	this->terrain->frustum_culling = false;
-	this->terrain->setShader(shader);
+	this->terrain = EntityFactory::newIsland();
 	this->addChild(this->terrain);
+
+	int x,z;
+	for(x = -6; x < 7; x++){
+		for(z = -6; z < 7; z++){
+			this->terrain = EntityFactory::newSea();
+			this->terrain->model.setTranslation(x * 10000, 15, z * 10000);
+			this->addChild(this->terrain);
+		}
+	}
 
 	int i;
 	EntityMesh* e;
+	e = EntityFactory::newPlane();
+	e->model.setTranslation(200, 1700, 1600);
+	this->addChild(e);
+	this->controller->setEntity(e->id);
+	this->controller->setCamera(camera);
 	for(i = 0; i<100;i++){
-		e = new EntityMesh("plane");
-		e->setMesh("data/mesh/spitfire/spitfire.ASE");
-		e->setTexture("data/mesh/spitfire/spitfire_color_spec.tga");
-		e->setShader(shader);
+		e = EntityFactory::newPlane();
 		e->model.setTranslation(rand() % 200-100, 1500 + rand() % 200-100, 1400 + rand() % 200-100);
 		this->addChild(e);
 	}
+
+	this->controller->init();
 }
 
 void World::render()
@@ -66,7 +67,7 @@ void World::render()
 	camera->set();
 	this->clipper->ExtractFrustum(this->camera);
 
-	drawGrid(500);
+	//drawGrid(500);
 
 	this->skybox->model.setTranslation(camera->eye.x, camera->eye.y, camera->eye.z);
 
@@ -75,6 +76,7 @@ void World::render()
 
 void World::update(double delta)
 {
+	this->controller->update(delta);
 	this->processEvent("update", &delta);
 }
 

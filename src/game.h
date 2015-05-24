@@ -12,7 +12,8 @@
 class Game
 {
 public:
-	static World* world;
+	static Game* getInstance();
+	World* world;
 
 	//window
 	SDL_Window* window;
@@ -21,21 +22,17 @@ public:
     
     float time;
 
-	//keyboard state
-	const Uint8* keystate;
-
 	//mouse state
-	int mouse_state; //tells which buttons are pressed
-	Vector2 mouse_position; //last mouse position
-	Vector2 mouse_delta; //mouse movement in the last frame
 	bool mouse_locked; //tells if the mouse is locked (not seen)
 	
 	Camera* camera; //our global camera
 
-	Game(SDL_Window* window);
+	Game();
 	void init( void );
 	void render( void );
 	void update( double dt );
+
+	void setWindow(SDL_Window* window);
 
 	void onKeyPressed( SDL_KeyboardEvent event );
 	void onMouseButton( SDL_MouseButtonEvent event );

@@ -91,15 +91,15 @@ bool Shader::load(const std::string& vsf, const std::string& psf)
 	return true;
 }
 
-Shader* Shader::Load(const char* vsf, const char* psf)
+Shader* Shader::Load(const char* name)
 {
-	std::string name = std::string(vsf) + "," + std::string(psf);
 	std::map<std::string,Shader*>::iterator it = s_Shaders.find(name);
 	if (it != s_Shaders.end())
 		return it->second;
 
 	Shader* sh = new Shader();
-	if (!sh->load(vsf,psf))
+
+	if (!sh->load(std::string(name)+".vs", std::string(name)+".fs"))
 		return NULL;
 	s_Shaders[name] = sh;
 	return sh;

@@ -19,7 +19,7 @@
 
 long last_time = 0; //this is used to calcule the elapsed time between frames
 
-Game* game = NULL;
+Game* game = Game::getInstance();
 
 // *********************************
 //create a window using SDL
@@ -73,16 +73,9 @@ SDL_Window* createWindow(const char* caption, int width, int height, bool fullsc
 void mainLoop()
 {
 	SDL_Event sdlEvent;
-	int x,y;
-
-	SDL_GetMouseState(&x,&y);
-	game->mouse_position.set(x,y);
 
 	while (1)
 	{
-		//read keyboard state and stored in keystate
-		game->keystate = SDL_GetKeyboardState(NULL);
-
 		//render frame
 		game->render();
 
@@ -110,10 +103,6 @@ void mainLoop()
 				}
 		}
 
-		//get mouse position and delta (do after pump events)
-		game->mouse_state = SDL_GetMouseState(&x,&y);
-		game->mouse_delta.set( game->mouse_position.x - x, game->mouse_position.y - y );
-		game->mouse_position.set(x,y);
         
         
 		//update logic
@@ -151,7 +140,7 @@ int main(int argc, char **argv)
 		return 0;
 
 	//launch the game (game is a global variable)
-	game = new Game(window);
+	game->setWindow(window);
 	game->init();
 
 	//main loop, application gets inside here till user closes it

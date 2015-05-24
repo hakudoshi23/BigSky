@@ -3,6 +3,7 @@
 
 #include "../framework.h"
 
+#include "controller.h"
 #include "../camera.h"
 #include "../clipper.h"
 #include "../entity/entity.h"
@@ -13,6 +14,7 @@ class World : public Entity
 public:
 	Camera* camera;
 	Clipper* clipper;
+	Controller* controller;
 
 	EntityMesh* terrain;
 	EntityMesh* skybox;

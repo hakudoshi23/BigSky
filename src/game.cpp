@@ -6,9 +6,12 @@
 
 #include <cmath>
 
-World* Game::world = new World();
+Game::Game()
+{
+	mouse_locked = false;
+}
 
-Game::Game(SDL_Window* window)
+void Game::setWindow(SDL_Window* window)
 {
 	this->window = window;
 
@@ -17,9 +20,6 @@ Game::Game(SDL_Window* window)
 	// things create here cannot access opengl
 	SDL_GetWindowSize( window, &window_width, &window_height );
 	std::cout << " * Window size: " << window_width << " x " << window_height << std::endl;
-
-	keystate = NULL;
-	mouse_locked = false;
 }
 
 //Here we have already GL working, so we can create meshes and textures
@@ -30,7 +30,8 @@ void Game::init(void)
     //SDL_SetWindowSize(window, 50,50);
 
 	//set the clear color (the background color)
-	glClearColor(0.0, 0.0, 0.0, 1.0);
+	glClearColor(0.623529, 0.752941, 0.796078, 1.0);
+	//glClearColor(0.0, 0.0, 0.0, 1.0);
 
 	//OpenGL flags
 	glEnable( GL_CULL_FACE ); //render both sides of every triangle
@@ -40,10 +41,11 @@ void Game::init(void)
 	//create our camera
 	camera = new Camera();
 	camera->lookAt(Vector3(0,1500,1500),Vector3(0,750,0), Vector3(0,1,0)); //position the camera and point to 0,0,0
-	camera->setPerspective(70,window_width/(float)window_height,0.1,10000); //set the projection, we want to be perspective
-	Game::world->setCamera(camera);
+	camera->setPerspective(70,window_width/(float)window_height,1,10000); //set the projection, we want to be perspective
 
-	Game::world->init();
+	Game::getInstance()->world = new World();
+	Game::getInstance()->world->setCamera(camera);
+	Game::getInstance()->world->init();
 
 	//hide the cursor
 	SDL_ShowCursor(!mouse_locked); //hide or show the mouse
@@ -65,7 +67,7 @@ void Game::render(void)
 
 void Game::update(double seconds_elapsed)
 {
-	double speed = seconds_elapsed * 100; //the speed is defined by the seconds_elapsed so it goes constant
+	/*double speed = seconds_elapsed * 100; //the speed is defined by the seconds_elapsed so it goes constant
 
 	//mouse input to rotate the cam
 	if ((mouse_state & SDL_BUTTON_LEFT) || mouse_locked ) //is left button pressed?
@@ -75,7 +77,7 @@ void Game::update(double seconds_elapsed)
 	}
 
 	//async input to move the camera around
-	if(keystate[SDL_SCANCODE_LSHIFT]) speed *= 5; //move faster with left shift
+	if (keystate[SDL_SCANCODE_LSHIFT]) speed *= 5; //move faster with left shift
 	if (keystate[SDL_SCANCODE_W] || keystate[SDL_SCANCODE_UP]) camera->move(Vector3(0,0,0.5) * speed);
 	if (keystate[SDL_SCANCODE_S] || keystate[SDL_SCANCODE_DOWN]) camera->move(Vector3(0,0,-0.5) * speed);
 	if (keystate[SDL_SCANCODE_A] || keystate[SDL_SCANCODE_LEFT]) camera->move(Vector3(0.5,0,0) * speed);
@@ -92,7 +94,7 @@ void Game::update(double seconds_elapsed)
         
         this->mouse_position.x = center_x;
         this->mouse_position.y = center_y;
-	}
+	}*/
 
 	Game::world->update(seconds_elapsed);
 }
@@ -130,5 +132,11 @@ void Game::setWindowSize(int width, int height)
 	camera->aspect =  width / (float)height;
 	window_width = width;
 	window_height = height;
+}
+
+Game* Game::getInstance()
+{
+	static Game* instance = new Game();
+	return instance;
 }
 
