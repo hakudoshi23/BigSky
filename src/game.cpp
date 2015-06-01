@@ -5,19 +5,28 @@
 #include "shader.h"
 
 #include <cmath>
+#include <bass.h>
 
 Game::Game()
 {
 	mouse_locked = false;
+	//Inicializamos BASS  (id_del_device, muestras por segundo, ...)
+	BASS_Init(1, 44100, 0, 0, NULL);
+	//El handler para un sample
+	HSAMPLE hSample;
+	//El handler para un canal
+	HCHANNEL hSampleChannel;
+	//Cargamos un sample (memoria, filename, offset, length, max, flags)
+	hSample = BASS_SampleLoad(false, "data/sound/shot.wav",0,0,3,0); //use BASS_SAMPLE_LOOP in the last param to have a looped sound
+	//Creamos un canal para el sample
+	hSampleChannel = BASS_SampleGetChannel(hSample,false);
+	//Lanzamos un sample
+	BASS_ChannelPlay(hSampleChannel, true);
 }
 
 void Game::setWindow(SDL_Window* window)
 {
 	this->window = window;
-
-	// initialize attributes
-	// Warning: DO NOT CREATE STUFF HERE, USE THE INIT 
-	// things create here cannot access opengl
 	SDL_GetWindowSize( window, &window_width, &window_height );
 	std::cout << " * Window size: " << window_width << " x " << window_height << std::endl;
 }
@@ -26,8 +35,6 @@ void Game::setWindow(SDL_Window* window)
 void Game::init(void)
 {
     std::cout << " * Path: " << getPath() << std::endl;
-    
-    //SDL_SetWindowSize(window, 50,50);
 
 	//set the clear color (the background color)
 	glClearColor(0.623529, 0.752941, 0.796078, 1.0);
@@ -36,7 +43,6 @@ void Game::init(void)
 	//OpenGL flags
 	glEnable( GL_CULL_FACE ); //render both sides of every triangle
 	glEnable( GL_DEPTH_TEST ); //check the occlusions using the Z buffer
-	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	//create our camera
 	camera = new Camera();
@@ -58,8 +64,6 @@ void Game::render(void)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	Game::world->render();
-    
-    //glDisable( GL_BLEND );
 
 	//swap between front buffer and back buffer
 	SDL_GL_SwapWindow(this->window);
@@ -67,35 +71,6 @@ void Game::render(void)
 
 void Game::update(double seconds_elapsed)
 {
-	/*double speed = seconds_elapsed * 100; //the speed is defined by the seconds_elapsed so it goes constant
-
-	//mouse input to rotate the cam
-	if ((mouse_state & SDL_BUTTON_LEFT) || mouse_locked ) //is left button pressed?
-	{
-		camera->rotate(mouse_delta.x * 0.005, Vector3(0,-1,0));
-		camera->rotate(mouse_delta.y * 0.005, camera->getLocalVector( Vector3(-1,0,0)));
-	}
-
-	//async input to move the camera around
-	if (keystate[SDL_SCANCODE_LSHIFT]) speed *= 5; //move faster with left shift
-	if (keystate[SDL_SCANCODE_W] || keystate[SDL_SCANCODE_UP]) camera->move(Vector3(0,0,0.5) * speed);
-	if (keystate[SDL_SCANCODE_S] || keystate[SDL_SCANCODE_DOWN]) camera->move(Vector3(0,0,-0.5) * speed);
-	if (keystate[SDL_SCANCODE_A] || keystate[SDL_SCANCODE_LEFT]) camera->move(Vector3(0.5,0,0) * speed);
-	if (keystate[SDL_SCANCODE_D] || keystate[SDL_SCANCODE_RIGHT]) camera->move(Vector3(-0.5,0,0) * speed);
-    
-	//to navigate with the mouse fixed in the middle
-	if (mouse_locked)
-	{
-		int center_x = floor(window_width*0.5);
-		int center_y = floor(window_height*0.5);
-        //center_x = center_y = 50;
-		SDL_WarpMouseInWindow(this->window, center_x, center_y); //put the mouse back in the middle of the screen
-		//SDL_WarpMouseGlobal(center_x, center_y); //put the mouse back in the middle of the screen
-        
-        this->mouse_position.x = center_x;
-        this->mouse_position.y = center_y;
-	}*/
-
 	Game::world->update(seconds_elapsed);
 }
 

@@ -8,6 +8,7 @@ class Entity
 public:
 	int id;
 	std::string name;
+	std::vector<std::string> tags;
 
 	std::vector<Entity*> children;
 	Entity* parent;

@@ -32,6 +32,7 @@ public:
 
 	Entity* findByID(int id);
 	Entity* findByName(std::string name);
+	std::vector<Entity*> findByTag(std::string tag);
 };
 
 #endif

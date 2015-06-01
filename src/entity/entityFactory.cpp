@@ -6,6 +6,7 @@ EntityMesh* EntityFactory::newPlane()
 	e->setMesh("data/mesh/spitfire/spitfire.ASE");
 	e->setTexture("data/mesh/spitfire/spitfire_color_spec.tga");
 	e->setShader("data/shaders/default");
+	e->tags.push_back("plane");
 	return e;
 }
 
@@ -16,6 +17,7 @@ EntityMesh* EntityFactory::newIsland()
 	e->setTexture("data/mesh/island/island_color.tga");
 	e->setShader("data/shaders/default");
 	e->frustum_culling = false;
+	e->tags.push_back("terrain");
 	return e;
 }
 
@@ -26,6 +28,7 @@ EntityMesh* EntityFactory::newSea()
 	e->setTexture("data/mesh/water/agua.tga");
 	e->setShader("data/shaders/sea");
 	e->frustum_culling = false;
+	e->tags.push_back("sea");
 	return e;
 }
 
@@ -37,5 +40,6 @@ EntitySky* EntityFactory::newSky()
 	e->setShader("data/shaders/default");
 	e->frustum_culling = false;
 	e->depth_test = false;
+	e->tags.push_back("sky");
 	return e;
 }

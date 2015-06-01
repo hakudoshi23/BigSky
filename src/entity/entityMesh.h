@@ -19,6 +19,7 @@ public:
 
 	bool frustum_culling;
 	bool depth_test;
+	bool collision;
 
 	EntityMesh(std::string name);
 	~EntityMesh();

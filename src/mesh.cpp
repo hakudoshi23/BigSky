@@ -213,7 +213,7 @@ void Mesh::uploadToVRAM()
 	{
 		glGenBuffersARB( 1, &colors_vbo_id); //generate one handler (id)
 		glBindBufferARB( GL_ARRAY_BUFFER_ARB, colors_vbo_id ); //bind the handler
-		glBufferDataARB( GL_ARRAY_BUFFER_ARB, uvs.size() * 4 * sizeof(float), &colors[0], GL_STATIC_DRAW_ARB ); //upload data
+		glBufferDataARB( GL_ARRAY_BUFFER_ARB, colors.size() * 4 * sizeof(float), &colors[0], GL_STATIC_DRAW_ARB ); //upload data
 	}
 
 }
@@ -289,9 +289,22 @@ void Mesh::createPlane(float size)
 
 Mesh* Mesh::load(const char* filename)
 {
+	/* Check cache */
 	std::map<std::string, Mesh*>::iterator it = cache.find(filename);
 	if(it != cache.end()){
 		return it->second;
+	}
+
+	/* Check BIN files */
+	std::string binFile(filename);
+	binFile = binFile.substr(0, binFile.rfind(".")) + ".bin";
+	std::cout << "Mesh BIN: " << binFile << std::endl;
+	if (FILE *file=fopen(binFile.c_str(),"r")){
+		Mesh* mesh = new Mesh();
+		mesh->loadBinary(binFile.c_str());
+		fclose(file);
+		cache[filename] = mesh;
+		return mesh;
 	}
 
 	TextParser parser;
@@ -321,6 +334,8 @@ Mesh* Mesh::load(const char* filename)
 		vertices_unicos[i] = Vector3(x,z,-y);
 	}
 
+	mesh->collision_model = newCollisionModel3D();
+	mesh->collision_model->setTriangleNumber(num_faces * 3);
 	for(int i = 0; i<num_faces;i++){
 		parser.seek("*MESH_FACE");
 		parser.getword();
@@ -333,7 +348,11 @@ Mesh* Mesh::load(const char* filename)
 		mesh->vertices.push_back(vertices_unicos[fx]);
 		mesh->vertices.push_back(vertices_unicos[fy]);
 		mesh->vertices.push_back(vertices_unicos[fz]);
+		mesh->collision_model->addTriangle(&vertices_unicos[fx].x, &vertices_unicos[fx].y, &vertices_unicos[fx].z);
+		mesh->collision_model->addTriangle(&vertices_unicos[fy].x, &vertices_unicos[fy].y, &vertices_unicos[fy].z);
+		mesh->collision_model->addTriangle(&vertices_unicos[fz].x, &vertices_unicos[fz].y, &vertices_unicos[fz].z);
 	}
+	mesh->collision_model->finalize();
 
 	parser.seek("*MESH_NUMTVERTEX");
 	int num_uvs = parser.getint();
@@ -383,7 +402,52 @@ Mesh* Mesh::load(const char* filename)
 		nz = parser.getfloat();
 		mesh->normals.push_back(Vector3(nx, nz, -ny));
 	}
+
+	mesh->saveBinary(binFile.c_str());
  
 	mesh->uploadToVRAM();
 	return mesh;
+}
+
+void Mesh::loadBinary(const char* filename){
+	int s;
+	FILE* f = fopen(filename,"rb");
+
+	//Read Vertices
+	fread(&s,sizeof(int),1, f);
+	this->vertices.resize(s);
+	fread(&this->vertices[0], sizeof(Vector3),s, f);
+
+	//Read UVs
+	fread(&s,sizeof(int),1, f);
+	this->uvs.resize(s);
+	fread(&this->uvs[0], sizeof(Vector2),s, f);
+
+	//Read Normals
+	fread(&s,sizeof(int),1, f);
+	this->normals.resize(s);
+	fread(&this->normals[0], sizeof(Vector3),s, f);
+
+	fclose(f);
+}
+
+void Mesh::saveBinary(const char* filename){
+	FILE* f = fopen(filename,"wb");
+
+	//Write Vertices
+	int s = vertices.size();
+	fwrite(&s, sizeof(int),1, f);
+	fwrite(&vertices[0], sizeof(Vector3),vertices.size(), f);
+
+	//Write UVs
+	s = uvs.size();
+	fwrite(&s, sizeof(int),1, f);
+	fwrite(&uvs[0], sizeof(Vector2),uvs.size(), f);
+
+	//Write Normals
+	s = normals.size();
+	fwrite(&s, sizeof(int),1, f);
+	fwrite(&normals[0], sizeof(Vector3),normals.size(), f);
+
+	fclose(f);
 }

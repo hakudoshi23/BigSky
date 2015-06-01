@@ -8,6 +8,8 @@
 #include "../entity/entityMesh.h"
 #include "../entity/entitySky.h"
 
+#include "../entity/bulletFactory.h"
+
 #include <cmath>
 
 World::World() : Entity("world")
@@ -63,11 +65,8 @@ void World::init()
 
 void World::render()
 {
-	//Put the camera matrices on the stack of OpenGL (only for fixed rendering)
 	camera->set();
 	this->clipper->ExtractFrustum(this->camera);
-
-	//drawGrid(500);
 
 	this->skybox->model.setTranslation(camera->eye.x, camera->eye.y, camera->eye.z);
 
@@ -98,5 +97,14 @@ Entity* World::findByName(std::string name)
 	for (std::vector<Entity*>::iterator it = children.begin() ; it != children.end(); ++it)
 		if((*it)->name == name) return *it;
 	return NULL;
+}
+
+std::vector<Entity*> World::findByTag(std::string tag)
+{
+	std::vector<Entity*> result;
+	for (std::vector<Entity*>::iterator it = children.begin() ; it != children.end(); ++it)
+		if(std::find((*it)->tags.begin(), (*it)->tags.end(), tag) != (*it)->tags.end())
+			result.push_back(*ita);
+	return result;
 }
 

@@ -3,6 +3,7 @@
 #include "../includes.h"
 #include "../utils.h"
 
+#include "../entity/bulletFactory.h"
 #include "../game.h"
 
 Controller::Controller()
@@ -25,6 +26,17 @@ void Controller::init()
 	int x,y;
 	SDL_GetMouseState(&x,&y);
 	this->mouse_position.set(x,y);
+	Entity* player = Game::getInstance()->world->findByID(this->entity_id);
+	if(player != NULL && camera != NULL){
+		Vector3 playerPos = Vector3(
+			player->model.m[12],
+			player->model.m[13] + 5,
+			player->model.m[14] - 13
+		);
+		Vector3 dir = player->model * Vector3(0,0,1);
+		//std::cout << "PlayerPos: " << dir.x << ", " << dir.y << ", " << dir.z << std::endl;
+		camera->lookAt(playerPos, dir, Vector3(0,1,0));
+	}
 }
 void Controller::update(double delta)
 {
@@ -36,33 +48,23 @@ void Controller::update(double delta)
 
 	Entity* player = Game::getInstance()->world->findByID(this->entity_id);
 	if(player != NULL && camera != NULL){
-		Vector3 playerPos = Vector3(
-			player->model.m[12],
-			player->model.m[13] + 5,
-			player->model.m[14] - 13
-		);
-		Vector3 dir = player->model * Vector3(0,0,1);
-		//std::cout << "PlayerPos: " << dir.x << ", " << dir.y << ", " << dir.z << std::endl;
-		//camera->lookAt(playerPos, dir, Vector3(0,1,0));
-
-		if(Game::getInstance()->mouse_locked){
-			camera->rotate(this->mouse_delta.x * 0.005, Vector3(0,-1,0));
-			camera->rotate(this->mouse_delta.y * 0.005, camera->getLocalVector( Vector3(-1,0,0)));
-			/*player->model.rotate(this->mouse_delta.x * 0.005, Vector3(0,-1,0));
-			player->model.rotate(this->mouse_delta.y * 0.005, camera->getLocalVector( Vector3(-1,0,0)));*/
-		}
-
-		double speed = delta * 100;
+		double speed = delta * 30;
 		if (keystate[SDL_SCANCODE_LSHIFT]) speed *= 5;
-		if (keystate[SDL_SCANCODE_W] || keystate[SDL_SCANCODE_UP]) camera->move(Vector3(0,0,0.5) * speed);
-		if (keystate[SDL_SCANCODE_S] || keystate[SDL_SCANCODE_DOWN]) camera->move(Vector3(0,0,-0.5) * speed);
-		if (keystate[SDL_SCANCODE_A] || keystate[SDL_SCANCODE_LEFT]) camera->move(Vector3(0.5,0,0) * speed);
-		if (keystate[SDL_SCANCODE_D] || keystate[SDL_SCANCODE_RIGHT]) camera->move(Vector3(-0.5,0,0) * speed);
-		/*if (keystate[SDL_SCANCODE_LSHIFT]) speed *= 5;
-		if (keystate[SDL_SCANCODE_W] || keystate[SDL_SCANCODE_UP]) player->model.traslate(0, 0, 0.5 * speed);
-		if (keystate[SDL_SCANCODE_S] || keystate[SDL_SCANCODE_DOWN]) player->model.traslate(0, 0, -0.5 * speed);
-		if (keystate[SDL_SCANCODE_A] || keystate[SDL_SCANCODE_LEFT]) player->model.traslate(0.5 * speed, 0, 0);
-		if (keystate[SDL_SCANCODE_D] || keystate[SDL_SCANCODE_RIGHT]) player->model.traslate(-0.5 * speed, 0, 0);*/
+		if (keystate[SDL_SCANCODE_W] || keystate[SDL_SCANCODE_UP]) player->model.rotateLocal(-0.01, Vector3(1,0,0));
+		if (keystate[SDL_SCANCODE_S] || keystate[SDL_SCANCODE_DOWN]) player->model.rotateLocal(0.01, Vector3(1,0,0));
+		if (keystate[SDL_SCANCODE_A] || keystate[SDL_SCANCODE_LEFT]) player->model.rotateLocal(-0.005, Vector3(0,1,0));
+		if (keystate[SDL_SCANCODE_D] || keystate[SDL_SCANCODE_RIGHT]) player->model.rotateLocal(0.005, Vector3(0,1,0));
+
+		Vector3 f = player->model.rotateVector(Vector3(0, 0, 1));
+		player->model.traslate(f.x * speed, f.y * speed, f.z * speed);
+
+		Vector3 playerPos = Vector3(player->model.m[12],player->model.m[13],player->model.m[14]);
+		Vector3 camPos = player->model * Vector3(0, 3, -15);
+		camera->lookAt(camPos, playerPos, player->model.rotateVector(Vector3(0, 1, 0)));
+
+		if (keystate[SDL_SCANCODE_SPACE]){
+			BulletManager::getInstance()->createBullet(playerPos, f * 50, 10, this->entity_id);
+		}
 
 		if(Game::getInstance()->mouse_locked){
 			int center_x = floor(Game::getInstance()->window_width * 0.5);

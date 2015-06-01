@@ -27,7 +27,37 @@
       <Filter>World</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\clipper.cpp" />
-    <ClCompile Include="..\..\src\entity\entitySkybox.cpp">
+    <ClCompile Include="..\..\src\entity\entitySky.cpp">
+      <Filter>Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\coldet\box.cpp">
+      <Filter>Coldet</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\coldet\box_bld.cpp">
+      <Filter>Coldet</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\coldet\coldet.cpp">
+      <Filter>Coldet</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\coldet\coldet_bld.cpp">
+      <Filter>Coldet</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\coldet\math3d.cpp">
+      <Filter>Coldet</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\coldet\mytritri.cpp">
+      <Filter>Coldet</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\coldet\sysdep.cpp">
+      <Filter>Coldet</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\coldet\tritri.c">
+      <Filter>Coldet</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\entity\bullet.cpp">
+      <Filter>Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\entity\bulletFactory.cpp">
       <Filter>Entity</Filter>
     </ClCompile>
   </ItemGroup>
@@ -58,7 +88,31 @@
       <Filter>World</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\clipper.h" />
-    <ClInclude Include="..\..\src\entity\entitySkybox.h">
+    <ClInclude Include="..\..\src\entity\entitySky.h">
+      <Filter>Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\coldet\box.h">
+      <Filter>Coldet</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\coldet\coldet.h">
+      <Filter>Coldet</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\coldet\coldetimpl.h">
+      <Filter>Coldet</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\coldet\math3d.h">
+      <Filter>Coldet</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\coldet\mytritri.h">
+      <Filter>Coldet</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\coldet\sysdep.h">
+      <Filter>Coldet</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\entity\bullet.h">
+      <Filter>Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\entity\bulletFactory.h">
       <Filter>Entity</Filter>
     </ClInclude>
   </ItemGroup>
@@ -68,6 +122,9 @@
     </Filter>
     <Filter Include="World">
       <UniqueIdentifier>{fe3b055f-752f-42d1-8248-409cb3113e49}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Coldet">
+      <UniqueIdentifier>{d14d9518-3950-4556-813e-e152b41b6f89}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

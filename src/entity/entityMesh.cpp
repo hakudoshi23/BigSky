@@ -9,6 +9,7 @@ EntityMesh::EntityMesh(std::string name) : Entity(name)
 {
 	this->frustum_culling = true;
 	this->depth_test = true;
+	this->collision = true;
 }
 
 EntityMesh::~EntityMesh()
@@ -28,6 +29,7 @@ void EntityMesh::processEvent(std::string name, void* data)
 			_s->enable();
 			_s->setMatrix44("u_model", this->model );
 			_s->setMatrix44("u_mvp", mvp );
+			_s->setUniform1("u_time", Game::getInstance()->time);
 			_s->setTexture("u_texture", _t->texture_id);
 			_m->render(GL_TRIANGLES, _s);
 			_s->disable();

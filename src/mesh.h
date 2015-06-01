@@ -9,12 +9,16 @@
 #include "framework.h"
 #include <map>
 
+#include "coldet/coldet.h"
+
 class Shader;
 
 class Mesh
 {
 public:
 	static std::map<std::string, Mesh*> cache;
+
+	CollisionModel3D* collision_model;
 
 	std::vector< Vector3 > vertices; //here we store the vertices
 	std::vector< Vector3 > normals;	 //here we store the normals
@@ -29,6 +33,9 @@ public:
 	Mesh();
 	Mesh( const Mesh& m );
 	~Mesh();
+	
+	void saveBinary(const char* filename);
+	void loadBinary(const char* filename);
 
 	void clear();
 	void render(int primitive);
