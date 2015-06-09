@@ -13,7 +13,7 @@ Entity::Entity(std::string name)
 
 Entity::~Entity()
 {
-	std::cout << "Delete Entity - " << std::endl;
+	std::cout << "Delete Entity!" << std::endl;
 }
 
 void Entity::addChild(Entity* child)

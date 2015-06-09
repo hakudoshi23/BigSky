@@ -14,9 +14,13 @@ public:
 	std::vector<Bullet*> bullets;
 	Vector3* gravity;
 	Mesh* mesh;
+	
+	Vector3 rand;
 
 	BulletManager();
 	~BulletManager();
+
+	std::vector<Bullet*> getBullets();
 
 	void processEvent(std::string name, void* data = NULL);
 	

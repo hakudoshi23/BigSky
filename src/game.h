@@ -8,24 +8,25 @@
 #include "includes.h"
 #include "camera.h"
 #include "world/world.h"
+#include "state/gameState.h"
 
 class Game
 {
 public:
+	static void swapState(GameState* state);
 	static Game* getInstance();
+	static GameState* state;
 	World* world;
 
-	//window
 	SDL_Window* window;
 	int window_width;
 	int window_height;
     
     float time;
 
-	//mouse state
-	bool mouse_locked; //tells if the mouse is locked (not seen)
+	bool mouse_locked;
 	
-	Camera* camera; //our global camera
+	Camera* camera;
 
 	Game();
 	void init( void );

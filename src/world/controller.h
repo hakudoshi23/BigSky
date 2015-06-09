@@ -18,6 +18,8 @@ public:
 	int entity_id;
 	Camera* camera;
 
+	float shootCD, lastShoot;
+
 	Controller();
 	~Controller();
 

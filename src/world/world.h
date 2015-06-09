@@ -12,6 +12,8 @@
 class World : public Entity
 {
 public:
+	std::vector<Entity*> toDestroy;
+
 	Camera* camera;
 	Clipper* clipper;
 	Controller* controller;
@@ -29,6 +31,8 @@ public:
 	void init();
 	void render();
 	void update(double delta);
+
+	void destroy(Entity* entity);
 
 	Entity* findByID(int id);
 	Entity* findByName(std::string name);

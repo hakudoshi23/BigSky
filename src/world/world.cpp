@@ -8,7 +8,7 @@
 #include "../entity/entityMesh.h"
 #include "../entity/entitySky.h"
 
-#include "../entity/bulletFactory.h"
+#include "../entity/bulletManager.h"
 
 #include <cmath>
 
@@ -39,8 +39,8 @@ void World::init()
 	this->addChild(this->terrain);
 
 	int x,z;
-	for(x = -6; x < 7; x++){
-		for(z = -6; z < 7; z++){
+	for(x = -3; x < 4; x++){
+		for(z = -3; z < 4; z++){
 			this->terrain = EntityFactory::newSea();
 			this->terrain->model.setTranslation(x * 10000, 15, z * 10000);
 			this->addChild(this->terrain);
@@ -54,9 +54,10 @@ void World::init()
 	this->addChild(e);
 	this->controller->setEntity(e->id);
 	this->controller->setCamera(camera);
-	for(i = 0; i<100;i++){
+	for(i = 0; i<10;i++){
 		e = EntityFactory::newPlane();
 		e->model.setTranslation(rand() % 200-100, 1500 + rand() % 200-100, 1400 + rand() % 200-100);
+		e->tags.push_back("enemy");
 		this->addChild(e);
 	}
 
@@ -77,6 +78,19 @@ void World::update(double delta)
 {
 	this->controller->update(delta);
 	this->processEvent("update", &delta);
+	if(this->toDestroy.size() > 0){
+		for (std::vector<Entity*>::iterator it = this->toDestroy.begin() ; it != this->toDestroy.end();){
+			Entity* parent = (*it)->parent;
+			std::cout << "Let's delete Entity [" << (*it)->id << "] parent " << parent->id << std::endl;
+			for (std::vector<Entity*>::iterator it2 = parent->children.begin() ; it2 != parent->children.end();){
+				if((*it)->id == (*it2)->id){
+					delete *it2;
+					it2 = parent->children.erase(it2);
+				} else ++it2;
+			}
+			it = this->toDestroy.erase(it);
+		}
+	}
 }
 
 void World::processEvent(std::string name, void* data)
@@ -104,7 +118,12 @@ std::vector<Entity*> World::findByTag(std::string tag)
 	std::vector<Entity*> result;
 	for (std::vector<Entity*>::iterator it = children.begin() ; it != children.end(); ++it)
 		if(std::find((*it)->tags.begin(), (*it)->tags.end(), tag) != (*it)->tags.end())
-			result.push_back(*ita);
+			result.push_back(*it);
 	return result;
+}
+
+void World::destroy(Entity* entity)
+{
+	this->toDestroy.push_back(entity);
 }
 

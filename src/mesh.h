@@ -41,6 +41,8 @@ public:
 	void render(int primitive);
 	void render(int primitive, Shader* sh);
 
+	void buildCollisionModel();
+
 	void uploadToVRAM(); //store the mesh info in the GPU RAM so it renders faster
 
 	void createPlane( float size );

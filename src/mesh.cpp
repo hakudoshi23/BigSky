@@ -183,6 +183,16 @@ void Mesh::render( int primitive, Shader* sh )
 	glBindBufferARB( GL_ARRAY_BUFFER_ARB, 0 );
 }
 
+void Mesh::buildCollisionModel(){
+	int size = this->vertices.size();
+	this->collision_model = newCollisionModel3D();
+	this->collision_model->setTriangleNumber(size / 3);
+	for(int i = 0; i < size; i++){
+		this->collision_model->addTriangle(&this->vertices[i].x, &this->vertices[i].y, &this->vertices[i].z);
+	}
+	this->collision_model->finalize();
+}
+
 void Mesh::uploadToVRAM()
 {
 	//delete old
@@ -285,8 +295,6 @@ void Mesh::createPlane(float size)
 	uvs.push_back( Vector2(0,0) );
 }
 
-
-
 Mesh* Mesh::load(const char* filename)
 {
 	/* Check cache */
@@ -302,6 +310,7 @@ Mesh* Mesh::load(const char* filename)
 	if (FILE *file=fopen(binFile.c_str(),"r")){
 		Mesh* mesh = new Mesh();
 		mesh->loadBinary(binFile.c_str());
+		mesh->buildCollisionModel();
 		fclose(file);
 		cache[filename] = mesh;
 		return mesh;
@@ -334,8 +343,6 @@ Mesh* Mesh::load(const char* filename)
 		vertices_unicos[i] = Vector3(x,z,-y);
 	}
 
-	mesh->collision_model = newCollisionModel3D();
-	mesh->collision_model->setTriangleNumber(num_faces * 3);
 	for(int i = 0; i<num_faces;i++){
 		parser.seek("*MESH_FACE");
 		parser.getword();
@@ -348,11 +355,7 @@ Mesh* Mesh::load(const char* filename)
 		mesh->vertices.push_back(vertices_unicos[fx]);
 		mesh->vertices.push_back(vertices_unicos[fy]);
 		mesh->vertices.push_back(vertices_unicos[fz]);
-		mesh->collision_model->addTriangle(&vertices_unicos[fx].x, &vertices_unicos[fx].y, &vertices_unicos[fx].z);
-		mesh->collision_model->addTriangle(&vertices_unicos[fy].x, &vertices_unicos[fy].y, &vertices_unicos[fy].z);
-		mesh->collision_model->addTriangle(&vertices_unicos[fz].x, &vertices_unicos[fz].y, &vertices_unicos[fz].z);
 	}
-	mesh->collision_model->finalize();
 
 	parser.seek("*MESH_NUMTVERTEX");
 	int num_uvs = parser.getint();
@@ -405,6 +408,7 @@ Mesh* Mesh::load(const char* filename)
 
 	mesh->saveBinary(binFile.c_str());
  
+	mesh->buildCollisionModel();
 	mesh->uploadToVRAM();
 	return mesh;
 }

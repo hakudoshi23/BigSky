@@ -7,6 +7,10 @@
 #include <cmath>
 #include <bass.h>
 
+#include "state/mainState.h"
+
+GameState* Game::state = NULL;
+
 Game::Game()
 {
 	mouse_locked = false;
@@ -31,62 +35,38 @@ void Game::setWindow(SDL_Window* window)
 	std::cout << " * Window size: " << window_width << " x " << window_height << std::endl;
 }
 
-//Here we have already GL working, so we can create meshes and textures
 void Game::init(void)
 {
     std::cout << " * Path: " << getPath() << std::endl;
-
-	//set the clear color (the background color)
-	glClearColor(0.623529, 0.752941, 0.796078, 1.0);
-	//glClearColor(0.0, 0.0, 0.0, 1.0);
-
-	//OpenGL flags
-	glEnable( GL_CULL_FACE ); //render both sides of every triangle
-	glEnable( GL_DEPTH_TEST ); //check the occlusions using the Z buffer
-
-	//create our camera
-	camera = new Camera();
-	camera->lookAt(Vector3(0,1500,1500),Vector3(0,750,0), Vector3(0,1,0)); //position the camera and point to 0,0,0
-	camera->setPerspective(70,window_width/(float)window_height,1,10000); //set the projection, we want to be perspective
-
-	Game::getInstance()->world = new World();
-	Game::getInstance()->world->setCamera(camera);
-	Game::getInstance()->world->init();
-
-	//hide the cursor
-	SDL_ShowCursor(!mouse_locked); //hide or show the mouse
+	Game::swapState(new MainState());
 }
 
-//what to do when the image has to be draw
 void Game::render(void)
 {
-	// Clear the window and the depth buffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	Game::world->render();
+	Game::state->render();
 
-	//swap between front buffer and back buffer
 	SDL_GL_SwapWindow(this->window);
 }
 
 void Game::update(double seconds_elapsed)
 {
-	Game::world->update(seconds_elapsed);
+	Game::state->update(seconds_elapsed);
 }
 
-//Keyboard event handler (sync input)
 void Game::onKeyPressed( SDL_KeyboardEvent event )
 {
 	switch(event.keysym.sym)
 	{
-		case SDLK_ESCAPE: exit(0); //ESC key, kill the app
+		case SDLK_ESCAPE: exit(0);
 	}
 }
 
 
 void Game::onMouseButton( SDL_MouseButtonEvent event )
 {
-	if (event.button == SDL_BUTTON_MIDDLE) //middle mouse
+	if (event.button == SDL_BUTTON_MIDDLE)
 	{
 		mouse_locked = !mouse_locked;
 		SDL_ShowCursor(!mouse_locked);
@@ -113,5 +93,12 @@ Game* Game::getInstance()
 {
 	static Game* instance = new Game();
 	return instance;
+}
+
+void Game::swapState(GameState* state)
+{
+	if(Game::state != NULL) Game::state->destroy();
+	Game::state = state;
+	if(Game::state != NULL) Game::state->init();
 }
 
