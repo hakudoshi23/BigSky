@@ -5,27 +5,24 @@
 
 #include "../game.h"
 
-EntityMesh::EntityMesh(std::string name) : Entity(name)
-{
+EntityMesh::EntityMesh(std::string name) : Entity(name) {
 	this->frustum_culling = true;
 	this->depth_test = true;
 	this->collision = true;
 }
 
-EntityMesh::~EntityMesh()
-{
+EntityMesh::~EntityMesh() {
 	std::cout << "Delete EntityMesh - " << this->name << std::endl;
 }
 
-void EntityMesh::processEvent(std::string name, void* data)
-{
+void EntityMesh::processEvent(std::string name, void* data) {
 	if(name.compare("render") == 0){
-		if(!this->frustum_culling || Game::getInstance()->world->clipper->PointInFrustum(this->model.m[12],this->model.m[13],this->model.m[14]))
+		if(!this->frustum_culling || World::getInstance()->clipper->PointInFrustum(this->model.m[12],this->model.m[13],this->model.m[14]))
 		{
 			Mesh* _m = Mesh::load(mesh.c_str());
 			Shader* _s = Shader::Load(shader.c_str());
 			Texture* _t = Texture::load(texture.c_str());
-			Matrix44 mvp = this->getGlobalMatrix() * Game::getInstance()->world->camera->viewprojection_matrix;
+			Matrix44 mvp = this->getGlobalMatrix() * World::getInstance()->camera->viewprojection_matrix;
 			_s->enable();
 			_s->setMatrix44("u_model", this->model );
 			_s->setMatrix44("u_mvp", mvp );
@@ -35,20 +32,17 @@ void EntityMesh::processEvent(std::string name, void* data)
 			_s->disable();
 		}
 	}
-	//Entity::processEvent(name, data);
+	__super::processEvent(name, data);
 }
 
-void EntityMesh::setMesh(std::string mesh)
-{
+void EntityMesh::setMesh(std::string mesh) {
 	this->mesh = mesh;
 }
 
-void EntityMesh::setTexture(std::string texture)
-{
+void EntityMesh::setTexture(std::string texture) {
 	this->texture = texture;
 }
 
-void EntityMesh::setShader(std::string shader)
-{
+void EntityMesh::setShader(std::string shader) {
 	this->shader = shader;
 }

@@ -1,42 +1,105 @@
 #include "entityFactory.h"
 
-EntityMesh* EntityFactory::newPlane()
-{
-	EntityMesh* e = new EntityMesh("plane");
-	e->setMesh("data/mesh/spitfire/spitfire.ASE");
-	e->setTexture("data/mesh/spitfire/spitfire_color_spec.tga");
-	e->setShader("data/shaders/default");
+#include "entityParticle.h"
+#include "../controller/ai/aiController.h"
+#include "../controller/playerController.h"
+
+EntityPlane* EntityFactory::newEnemy() {
+	EntityPlane* e = new EntityPlane("enemy");
+	e->setMesh("data/mesh/x3_runner/x3_runner.ASE");
+	e->setTexture("data/mesh/x3_runner/x3_runner.tga");
+	e->setShader("data/shaders/phong");
+	e->tags.push_back("enemy");
 	e->tags.push_back("plane");
+
+	AIController* c = new AIController();
+	c->entity_id = e->id;
+	c->init();
+	e->controller = c;
+
 	return e;
 }
 
-EntityMesh* EntityFactory::newIsland()
-{
-	EntityMesh* e = new EntityMesh("terrain");
-	e->setMesh("data/mesh/island/island.ASE");
-	e->setTexture("data/mesh/island/island_color.tga");
-	e->setShader("data/shaders/default");
+EntityPlane* EntityFactory::newPlayer() {
+	EntityPlane* e = new EntityPlane("player");
+	e->setMesh("data/mesh/x3_fighter/x3_fighter.ASE");
+	e->setTexture("data/mesh/x3_fighter/x3_fighter.tga");
+	e->setShader("data/shaders/phong");
+	e->tags.push_back("player");
+	e->tags.push_back("plane");
+
+	e->max_health = 200;
+	e->health = e->max_health;
+	e->max_shield = 100;
+	e->shield = e->max_shield;
+
+	PlayerController* c = new PlayerController();
+	c->entity_id = e->id;
+	c->init();
+	e->controller = c;
+
+	EntityParticle* ep = new EntityParticle();
+	ep->texture = "data/textures/smoke.tga";
+	Vector3 f = e->model.rotateVector(Vector3(0, 0, -9));
+	ep->model.setTranslation(f.x, f.y, f.z);
+	ep->color = new Vector4(1,0,0,1);
+	ep->random = 2;
+	ep->freq = 0.01;
+	ep->ttl = 0.5;
+	e->addChild(ep);
+
+	return e;
+}
+
+EntityMesh* EntityFactory::newAsteroid(int type) {
+	EntityMesh* e = new EntityMesh("asteroid");
+	switch(type){
+		case 0:
+			e->setMesh("data/mesh/asteroid/asteroides.ASE");
+			break;
+		case 1:
+			e->setMesh("data/mesh/asteroid/asteroide1.ASE");
+			break;
+		case 2:
+			e->setMesh("data/mesh/asteroid/asteroide2.ASE");
+			break;
+		case 3:
+			e->setMesh("data/mesh/asteroid/asteroide3.ASE");
+			break;
+	}
+	e->setTexture("data/mesh/asteroid/asteroide.tga");
+	e->setShader("data/shaders/phong");
+	e->tags.push_back("asteroid");
 	e->frustum_culling = false;
-	e->tags.push_back("terrain");
 	return e;
 }
 
-EntityMesh* EntityFactory::newSea()
-{
-	EntityMesh* e = new EntityMesh("sea");
-	e->setMesh("data/mesh/water/agua.ASE");
-	e->setTexture("data/mesh/water/agua.tga");
-	e->setShader("data/shaders/sea");
+EntityMesh* EntityFactory::newPlanet() {
+	EntityMesh* e = new EntityMesh("planet");
+	e->setMesh("data/mesh/planet/sphere.ASE");
+	e->setTexture("data/mesh/planet/craters.tga");
+	e->setShader("data/shaders/phong");
+	e->tags.push_back("planet");
 	e->frustum_culling = false;
-	e->tags.push_back("sea");
+
 	return e;
 }
 
-EntitySky* EntityFactory::newSky()
-{
+EntityMesh* EntityFactory::newFrigate() {
+	EntityMesh* e = new EntityMesh("frigate");
+	e->setMesh("data/mesh/frigate/frigate.ASE");
+	e->setTexture("data/mesh/frigate/frigate.tga");
+	e->setShader("data/shaders/phong");
+	e->tags.push_back("frigate");
+	e->frustum_culling = false;
+
+	return e;
+}
+
+EntitySky* EntityFactory::newSky() {
 	EntitySky* e = new EntitySky();
-	e->setMesh("data/mesh/skydome/cielo.ASE");
-	e->setTexture("data/mesh/skydome/cielo.tga");
+	e->setMesh("data/mesh/cubemap/box.ASE");
+	e->setTexture("data/mesh/cubemap/stars.tga");
 	e->setShader("data/shaders/default");
 	e->frustum_culling = false;
 	e->depth_test = false;

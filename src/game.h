@@ -16,7 +16,6 @@ public:
 	static void swapState(GameState* state);
 	static Game* getInstance();
 	static GameState* state;
-	World* world;
 
 	SDL_Window* window;
 	int window_width;
@@ -32,6 +31,8 @@ public:
 	void init( void );
 	void render( void );
 	void update( double dt );
+
+	bool shouldClose();
 
 	void setWindow(SDL_Window* window);
 

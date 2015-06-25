@@ -128,6 +128,8 @@ Texture* Texture::load(const char* filename, bool mipmaps)
 
 	if (ext == ".tga" || ext == ".TGA")
 	{
+		std::cout << " * Texture: " << filename << std::endl;
+
 		Texture* tex = new Texture();
 		cache[filename] = tex;
 

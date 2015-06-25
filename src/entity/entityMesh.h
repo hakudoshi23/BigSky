@@ -12,8 +12,6 @@ class EntityMesh : public Entity
 {
 public:
 	std::string mesh;
-	std::string mesh_low;
-	//TODO: Merge in Material
 	std::string texture;
 	std::string shader;
 
@@ -25,7 +23,8 @@ public:
 	~EntityMesh();
 
 	void setMesh(std::string mesh);
-	void setTexture(std::string mesh);
+	void setTexture(std::string texture);
+	void setNormal(std::string normal);
 	void setShader(std::string shader);
 
 	void processEvent(std::string name, void* data = NULL);

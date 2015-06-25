@@ -14,14 +14,6 @@ void Camera::set()
 	updateViewMatrix();
 	updateProjectionMatrix();
 
-	/*
-	Matrix44 temp; //used to transpose matrices
-	temp = view_matrix;
-	temp.transpose();
-
-
-	*/
-
 	glMatrixMode( GL_MODELVIEW );
 	glLoadMatrixf( view_matrix.m );
 	glMatrixMode( GL_PROJECTION );
@@ -31,7 +23,10 @@ void Camera::set()
 
 void Camera::updateViewMatrix()
 {
-	view_matrix.lookAt( eye, center, up );
+	if(type == PERSPECTIVE)
+		view_matrix.lookAt( eye, center, up );
+	else
+		view_matrix.setIdentity();
 
 	/* old version using GLU and fixed pipeline: DEPRECATED
 	//We activate the matrix we want to work: modelview

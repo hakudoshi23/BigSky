@@ -6,6 +6,7 @@
 #include "entity.h"
 #include "entityMesh.h"
 #include "entitySky.h"
+#include "entityPlane.h"
 
 #include "../mesh.h"
 #include "../texture.h"
@@ -14,9 +15,11 @@
 class EntityFactory
 {
 public:
-	static EntityMesh* newPlane();
-	static EntityMesh* newIsland();
-	static EntityMesh* newSea();
+	static EntityPlane* newEnemy();
+	static EntityPlane* newPlayer();
+	static EntityMesh* newAsteroid(int type);
+	static EntityMesh* newFrigate();
+	static EntityMesh* newPlanet();
 	static EntitySky* newSky();
 };
 

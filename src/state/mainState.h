@@ -2,14 +2,18 @@
 #define MAIN_STATE_H
 
 #include "../framework.h"
+
+#include "hud/hud.h"
 #include "gameState.h"
 
 class MainState : public GameState
 {
 public:
-	int update_count;
+	HUD* hud;
+	int player_id, update_count;
 
 	MainState();
+	~MainState();
 
 	void init();
 	void render();

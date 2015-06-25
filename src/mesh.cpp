@@ -306,13 +306,13 @@ Mesh* Mesh::load(const char* filename)
 	/* Check BIN files */
 	std::string binFile(filename);
 	binFile = binFile.substr(0, binFile.rfind(".")) + ".bin";
-	std::cout << "Mesh BIN: " << binFile << std::endl;
 	if (FILE *file=fopen(binFile.c_str(),"r")){
 		Mesh* mesh = new Mesh();
 		mesh->loadBinary(binFile.c_str());
 		mesh->buildCollisionModel();
 		fclose(file);
 		cache[filename] = mesh;
+		std::cout << " * Mesh [BIN]: " << binFile << std::endl;
 		return mesh;
 	}
 
@@ -322,6 +322,8 @@ Mesh* Mesh::load(const char* filename)
 		std::cout << "Error loading Mesh: " << filename << std::endl;
 		return NULL;
 	}
+	
+	std::cout << " * Mesh: " << filename << std::endl;
 
 	Mesh* mesh = new Mesh();
 	cache[filename] = mesh;

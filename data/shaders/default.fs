@@ -1,3 +1,4 @@
+const vec3 sunLight = vec3(0,1,0);
 
 varying vec3 v_position;
 varying vec3 v_world_position;

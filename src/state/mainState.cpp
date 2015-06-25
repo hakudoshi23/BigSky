@@ -3,53 +3,106 @@
 #include "../includes.h"
 #include <iostream>
 
+#include "hud/gameHud.h"
 #include "../game.h"
+#include "../camera.h"
 #include "../world/world.h"
-#include "../entity/bullet.h"
-#include "../entity/bulletManager.h"
+#include "../entity/entity.h"
+#include "../world/bullet.h"
+#include "../world/bulletManager.h"
+#include "../world/particleManager.h"
+#include "../entity/entityFactory.h"
+#include "../controller/ai/aiController.h"
 
-MainState::MainState(){
+#include "../state/winState.h"
+#include "../state/loseState.h"
+
+MainState::MainState() {
+	this->hud = new GameHUD();
+	this->hud->init();
 	this->update_count = 0;
+	this->player_id = 0;
 }
 
-void MainState::init()
-{
+MainState::~MainState() {
+	delete this->hud;
+}
+
+void MainState::init() {
 	glClearColor(0.623529, 0.752941, 0.796078, 1.0);
 
 	glEnable( GL_CULL_FACE );
 	glEnable( GL_DEPTH_TEST );
 
-	Camera* camera = new Camera();
-	camera->lookAt(Vector3(0,1500,1500),Vector3(0,750,0), Vector3(0,1,0));
-	camera->setPerspective(70, Game::getInstance()->window_width/ (float) Game::getInstance()->window_height, 1, 10000);
+	World::getInstance()->camera->setPerspective(70, Game::getInstance()->window_width / (float) Game::getInstance()->window_height, 1, 10000);
 
-	Game::getInstance()->world = new World();
-	Game::getInstance()->world->setCamera(camera);
-	Game::getInstance()->world->init();
+	/* Fill world with entities */
+	World::getInstance()->addChild(EntityFactory::newSky());
+
+	EntityPlane* ep = EntityFactory::newPlayer();
+	ep->model.setTranslation(200, 1000, 1000);
+	World::getInstance()->addChild(ep);
+	Vector3 playerPos = Vector3(ep->model.m[12], ep->model.m[13], ep->model.m[14]);
+	Vector3 center = playerPos + ep->model.rotateVector(Vector3(0, 1, 5));
+	Vector3 up = ep->model.rotateVector(Vector3(0, 1, 0));
+	Vector3 eye = ep->model * Vector3(0, 8, -100);
+	World::getInstance()->camera->lookAt(eye, center, up);
+	this->player_id = ep->id;
+
+	ep = EntityFactory::newEnemy();
+	ep->model.setTranslation(100, 1000, 1400);
+	AIController* aic = (AIController*) ep->controller;
+	aic->patroll_points.push_back(Vector3(150, 1200, 2000));
+	aic->patroll_points.push_back(Vector3(100, 500, 2000));
+	aic->patroll_points.push_back(Vector3(400, 500, 1500));
+	World::getInstance()->addChild(ep);
+
+	World::getInstance()->addChild(EntityFactory::newAsteroid(0));
+
+	Entity* e = EntityFactory::newFrigate();
+	e->model.setTranslation(150, 600, 2000);
+	World::getInstance()->addChild(e);
 }
    
-void MainState::render()
-{
-	Game::getInstance()->world->render();
+void MainState::render() {
+	World::getInstance()->render();
+	BulletManager::getInstance()->render();
+	ParticleManager::getInstance()->render();
+	this->hud->render();
 }
 
-void MainState::update(double delta)
-{
+void MainState::update(double delta) {
 	this->update_count++;
 	/* Avoid checking all collisions at the same frame! */
-	Game::getInstance()->world->update(delta);
-	
-	std::vector<Entity*> planes = Game::getInstance()->world->findByTag("plane");
+	World::getInstance()->update(delta);
+	BulletManager::getInstance()->update(delta);
+	ParticleManager::getInstance()->update(delta);
+	this->hud->update(delta);
 
-	/* Test collisions - Plane vs Sea */
-	if(this->update_count % 4 == 2){
-		for (std::vector<Entity*>::iterator it = planes.begin() ; it != planes.end(); ++it){
-			EntityMesh* em1 = (EntityMesh*) (*it);
-			if(em1->model.m[13] <= 0){
-				Game::getInstance()->world->destroy(em1);
-			}
-		}
+	/* Have you lost? */
+	Entity* player = World::getInstance()->findByID(this->player_id);
+	if(player == NULL) {
+		std::cout << "YOU LOSE!" << std::endl;
+		Game::swapState(new LoseState());
+	}else if(World::getInstance()->findByName("enemy") == NULL){
+		std::cout << "YOU WIN!" << std::endl;
+		Game::swapState(new WinState());
 	}
+
+	/* Update Camera position */
+	if(player != NULL) {
+		Matrix44 invCam = World::getInstance()->camera->view_matrix;
+		invCam.inverse();
+		Vector3 perfectEye = player->model * Vector3(0, 8, -12);
+		Vector3 playerPos = Vector3(player->model.m[12],player->model.m[13],player->model.m[14]);
+		Vector3 center = playerPos + player->model.rotateVector(Vector3(0, 1, 5));
+		Vector3 up = player->model.rotateVector(Vector3(0, 1, 0));
+		Vector3 eye = Vector3(invCam.m[12],invCam.m[13],invCam.m[14]);
+		eye = eye + ((perfectEye - eye) * 0.1f);
+		World::getInstance()->camera->lookAt(eye, center, up);
+	}
+	
+	std::vector<Entity*> planes = World::getInstance()->findByTag("plane");
 
 	/* Test collisions - Plane vs Bullet */
 	if(this->update_count % 4 == 0){
@@ -62,32 +115,33 @@ void MainState::update(double delta)
 				_m->collision_model->setTransform(em->model.m);
 				if((*it2)->author_id != em->id && _m->collision_model->sphereCollision((*it2)->position.v, 1)){
 					(*it2)->ttl = 0;
-					Game::getInstance()->world->destroy(em);
+					em->processEvent("damage", &(*it2)->damage);
 				}
 			}
 		}
 	}
 
 	/* Test collisions - Plane vs Plane */
+	float dmg = 500;
 	if(this->update_count % 4 == 1){
 		for (std::vector<Entity*>::iterator it = planes.begin() ; it != planes.end(); ++it){
 			EntityMesh* em1 = (EntityMesh*) (*it);
 			Mesh* mesh1 = Mesh::load(em1->mesh.c_str());
 			mesh1->collision_model->setTransform(em1->model.m);
 			for (std::vector<Entity*>::iterator it2 = it + 1 ; it2 != planes.end(); ++it2){
-				//std::cout << "Check: " << (*it)->id << " - " << (*it2)->id << std::endl;
-				EntityMesh* em2 = (EntityMesh*) (*it2);
-				Mesh* mesh2 = Mesh::load(em2->mesh.c_str());
-				if(mesh1->collision_model->collision(mesh2->collision_model, -1, 0.1, em2->model.m)){
-					std::cout << "P vs P Collision! " << (*it)->id << " - " << (*it2)->id << std::endl;
-					Game::getInstance()->world->destroy(em1);
-					Game::getInstance()->world->destroy(em2);
+				Vector3 origin = Vector3((*it2)->model.m[12],(*it2)->model.m[13],(*it2)->model.m[14]);
+				if(mesh1->collision_model->sphereCollision(origin.v, 5)){
+					em1->processEvent("damage", &dmg);
+					(*it2)->processEvent("damage", &dmg);
 				}
 			}
 		}
 	}
 }
 
-void MainState::destroy()
-{
+void MainState::destroy() {
+	World::getInstance()->destroy();
+	World::getInstance()->update(1);
+	BulletManager::getInstance()->clear();
+	ParticleManager::getInstance()->clear();
 }

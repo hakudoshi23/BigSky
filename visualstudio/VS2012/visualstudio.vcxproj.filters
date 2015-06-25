@@ -23,9 +23,6 @@
     <ClCompile Include="..\..\src\entity\entityFactory.cpp">
       <Filter>Entity</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\world\controller.cpp">
-      <Filter>World</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\clipper.cpp" />
     <ClCompile Include="..\..\src\entity\entitySky.cpp">
       <Filter>Entity</Filter>
@@ -54,11 +51,77 @@
     <ClCompile Include="..\..\src\coldet\tritri.c">
       <Filter>Coldet</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\entity\bullet.cpp">
+    <ClCompile Include="..\..\src\entity\entityParticle.cpp">
       <Filter>Entity</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\entity\bulletFactory.cpp">
+    <ClCompile Include="..\..\src\entity\entityPlane.cpp">
       <Filter>Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\sound\soundManager.cpp">
+      <Filter>Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\controller\playerController.cpp">
+      <Filter>Controller</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\controller\ai\aiController.cpp">
+      <Filter>Controller\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\controller\XBOX360.cpp">
+      <Filter>Controller</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\world\bullet.cpp">
+      <Filter>World</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\world\bulletManager.cpp">
+      <Filter>World</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\state\mainState.cpp">
+      <Filter>State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\state\menuState.cpp">
+      <Filter>State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\state\hud\gameHud.cpp">
+      <Filter>State\HUD</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\state\hud\menuHud.cpp">
+      <Filter>State\HUD</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\state\hud\controlsHud.cpp">
+      <Filter>State\HUD</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\state\hud\loadingHud.cpp">
+      <Filter>State\HUD</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\state\hud\loseHud.cpp">
+      <Filter>State\HUD</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\state\hud\winHud.cpp">
+      <Filter>State\HUD</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\state\controlsState.cpp">
+      <Filter>State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\state\loadingState.cpp">
+      <Filter>State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\state\loseState.cpp">
+      <Filter>State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\state\winState.cpp">
+      <Filter>State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\world\particle.cpp">
+      <Filter>World</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\world\particleManager.cpp">
+      <Filter>World</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\entity\entityMissile.cpp">
+      <Filter>Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\controller\ai\missileController.cpp">
+      <Filter>Controller\AI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -84,9 +147,6 @@
     <ClInclude Include="..\..\src\entity\entityFactory.h">
       <Filter>Entity</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\world\controller.h">
-      <Filter>World</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\clipper.h" />
     <ClInclude Include="..\..\src\entity\entitySky.h">
       <Filter>Entity</Filter>
@@ -109,11 +169,86 @@
     <ClInclude Include="..\..\src\coldet\sysdep.h">
       <Filter>Coldet</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\entity\bullet.h">
+    <ClInclude Include="..\..\src\entity\entityParticle.h">
       <Filter>Entity</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\entity\bulletFactory.h">
+    <ClInclude Include="..\..\src\entity\entityPlane.h">
       <Filter>Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\sound\soundManager.h">
+      <Filter>Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\controller\controller.h">
+      <Filter>Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\controller\playerController.h">
+      <Filter>Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\controller\ai\aiController.h">
+      <Filter>Controller\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\controller\XBOX360.h">
+      <Filter>Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\world\bullet.h">
+      <Filter>World</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\world\bulletManager.h">
+      <Filter>World</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\state\gameState.h">
+      <Filter>State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\state\mainState.h">
+      <Filter>State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\state\menuState.h">
+      <Filter>State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\state\hud\gameHud.h">
+      <Filter>State\HUD</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\state\hud\hud.h">
+      <Filter>State\HUD</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\state\hud\menuHud.h">
+      <Filter>State\HUD</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\state\hud\controlsHud.h">
+      <Filter>State\HUD</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\state\hud\loadingHud.h">
+      <Filter>State\HUD</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\state\hud\loseHud.h">
+      <Filter>State\HUD</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\state\hud\winHud.h">
+      <Filter>State\HUD</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\state\controlsState.h">
+      <Filter>State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\state\loadingState.h">
+      <Filter>State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\state\loseState.h">
+      <Filter>State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\state\winState.h">
+      <Filter>State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\world\particle.h">
+      <Filter>World</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\world\particleManager.h">
+      <Filter>World</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\entity\entityMissile.h">
+      <Filter>Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\controller\ai\missileController.h">
+      <Filter>Controller\AI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -125,6 +260,21 @@
     </Filter>
     <Filter Include="Coldet">
       <UniqueIdentifier>{d14d9518-3950-4556-813e-e152b41b6f89}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="State">
+      <UniqueIdentifier>{ad9c274c-e564-4132-bb9d-479a8a7df83d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sound">
+      <UniqueIdentifier>{79cb1759-4687-4b83-97a1-a5fe522b7571}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Controller">
+      <UniqueIdentifier>{0e25749e-f581-4c45-a4c8-ea7d10d3655d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Controller\AI">
+      <UniqueIdentifier>{6d763f10-0c33-4805-ad4a-b7dd8b56f03a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="State\HUD">
+      <UniqueIdentifier>{bf2f16cb-42de-484c-9e95-8669f6cda1fd}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

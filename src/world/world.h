@@ -3,40 +3,33 @@
 
 #include "../framework.h"
 
-#include "controller.h"
 #include "../camera.h"
 #include "../clipper.h"
 #include "../entity/entity.h"
 #include "../entity/entityMesh.h"
+#include "../controller/playerController.h"
 
 class World : public Entity
 {
 public:
+	static World* getInstance();
+
 	std::vector<Entity*> toDestroy;
 
-	Camera* camera;
 	Clipper* clipper;
-	Controller* controller;
-
-	EntityMesh* terrain;
-	EntityMesh* skybox;
+	Camera* camera;
 
 	World();
 	~World();
 
 	void processEvent(std::string name, void* data = NULL);
-
-	void setCamera(Camera* camera);
 	
 	void init();
 	void render();
 	void update(double delta);
 
 	void destroy(Entity* entity);
-
-	Entity* findByID(int id);
-	Entity* findByName(std::string name);
-	std::vector<Entity*> findByTag(std::string tag);
+	void destroy();
 };
 
 #endif

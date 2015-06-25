@@ -70,20 +70,16 @@ SDL_Window* createWindow(const char* caption, int width, int height, bool fullsc
 
 
 //The application main loop
-void mainLoop()
-{
+void mainLoop() {
 	SDL_Event sdlEvent;
 
-	while (1)
-	{
+	while (1) {
 		//render frame
 		game->render();
 
 		//update events
-		while(SDL_PollEvent(&sdlEvent))
-		{
-			switch(sdlEvent.type)
-				{
+		while(SDL_PollEvent(&sdlEvent)) {
+			switch(sdlEvent.type) {
 					case SDL_QUIT: return; break; //EVENT for when the user clicks the [x] in the corner
 					case SDL_MOUSEBUTTONDOWN: //EXAMPLE OF sync mouse input
 						game->onMouseButton( sdlEvent.button );
@@ -110,7 +106,9 @@ void mainLoop()
 		double elapsed_time = (now - last_time) * 0.001; //0.001 converts from milliseconds to seconds
 		last_time = now;
         game->time = now * 0.001;
-		game->update(elapsed_time); 
+		game->update(elapsed_time);
+
+		if(game->shouldClose()) return;
 
 		//check errors in opengl only when working in debug
 		#ifdef _DEBUG

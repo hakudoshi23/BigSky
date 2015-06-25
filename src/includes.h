@@ -31,12 +31,12 @@
 //GLUT
 #ifdef WIN32
     #include "GL/GLU.h"
-	//#include <GL/glut.h>
+	#include <GL/glut.h>
 #endif
 
 #ifdef __APPLE__
     #include "OpenGL/glu.h"
-	//#include <GLUT/glut.h>
+	#include <GLUT/glut.h>
 #endif
 
 #include <iostream>
