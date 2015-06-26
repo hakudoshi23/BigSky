@@ -6,7 +6,7 @@
 #include "../menuState.h"
 #include "../../sound/soundManager.h"
 
-WinHUD::WinHUD(int score) {
+WinHUD::WinHUD(Camera* cam, int score) {
 	if(XBOX360::getInstance()->getNumJoysticks() > 0){
 		this->joystick = XBOX360::getInstance()->openJoystick(0);
 	} else this->joystick = NULL;
@@ -14,11 +14,7 @@ WinHUD::WinHUD(int score) {
 
 	this->score = score;
 
-	this->camera = new Camera();
-	this->camera->setOrthographic(
-		0, Game::getInstance()->window_width, 
-		0, Game::getInstance()->window_height,
-		-1, 1);
+	this->camera = cam;
 	this->title = new Mesh();
 	this->text = new Mesh();
 }
@@ -38,6 +34,10 @@ void WinHUD::init() {
 }
    
 void WinHUD::render() {
+	this->camera->setOrthographic(
+		0, Game::getInstance()->window_width, 
+		0, Game::getInstance()->window_height,
+		-1, 1);
 	this->camera->set();
 	Matrix44 mvp = this->camera->viewprojection_matrix;
 	/* Shaders */
@@ -61,7 +61,7 @@ void WinHUD::render() {
 	/* Render text */
 	_st->enable();
 	_s2->setMatrix44("u_mvp", mvp );
-	this->printText("Pulsa Intro / X para continuar...", 50, 50);
+	this->printText("Pulsa Intro / Mando A para continuar...", 50, 50);
 	this->printText("Puntos: " + std::to_string(this->score), 
 		Game::getInstance()->window_width / 2.2, 150);
 	_st->disable();

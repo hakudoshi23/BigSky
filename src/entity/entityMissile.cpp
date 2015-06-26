@@ -9,7 +9,7 @@
 #include "../controller/ai/missileController.h"
 
 EntityMissile::EntityMissile() : EntityMesh("missile") {
-	this->max_move = new Vector3(0.1, 0.1, 0.1);
+	this->max_move = new Vector3(0.01, 0.01, 0.01);
 	this->tags.push_back("missile");
 
 	MissileController* c = new MissileController();
@@ -21,7 +21,7 @@ EntityMissile::EntityMissile() : EntityMesh("missile") {
 	this->mesh = "data/mesh/missile/missile.ASE";
 	this->shader = "data/shaders/phong";
 
-	this->dmg = 200;
+	this->dmg = 50;
 	this->ttl = 5;
 }
 

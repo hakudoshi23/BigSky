@@ -18,11 +18,12 @@ public:
 	SDL_Joystick* joystick;
 	const Uint8* keystate;
 	
+	Mesh* portrait;
 	Mesh* title;
 	Mesh* text;
 	int last_time;
 
-	LoseHUD();
+	LoseHUD(Camera* cam);
 	~LoseHUD();
 
 	void init();

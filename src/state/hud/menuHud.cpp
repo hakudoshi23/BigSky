@@ -7,7 +7,7 @@
 #include "../controlsState.h"
 #include "../../sound/soundManager.h"
 
-MenuHUD::MenuHUD() {
+MenuHUD::MenuHUD(Camera* cam) {
 	if(XBOX360::getInstance()->getNumJoysticks() > 0){
 		this->joystick = XBOX360::getInstance()->openJoystick(0);
 	} else this->joystick = NULL;
@@ -23,11 +23,7 @@ MenuHUD::MenuHUD() {
 	this->x_offset = 200;
 	this->y_offset = 340;
 
-	this->camera = new Camera();
-	this->camera->setOrthographic(
-		0, Game::getInstance()->window_width, 
-		0, Game::getInstance()->window_height,
-		-1, 1);
+	this->camera = cam;
 	this->background = new Mesh();
 	this->pointer = new Mesh();
 	this->logo = new Mesh();
@@ -63,6 +59,10 @@ void MenuHUD::init() {
 }
    
 void MenuHUD::render() {
+	this->camera->setOrthographic(
+		0, Game::getInstance()->window_width, 
+		0, Game::getInstance()->window_height,
+		-1, 1);
 	this->camera->set();
 	Matrix44 mvp = this->camera->viewprojection_matrix;
 	/* Shaders */
@@ -89,7 +89,7 @@ void MenuHUD::render() {
 	/* Render text */
 	_st->enable();
 	_s2->setMatrix44("u_mvp", mvp );
-	this->printText("v0.9a",
+	this->printText("v1.0.2",
 		Game::getInstance()->window_width - 70, 20);
 	int posY = Game::getInstance()->window_height - this->y_offset, 
 		posX = Game::getInstance()->window_width - this->x_offset;

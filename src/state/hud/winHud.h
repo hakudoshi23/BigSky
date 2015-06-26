@@ -22,7 +22,7 @@ public:
 	Mesh* text;
 	int last_time, score;
 
-	WinHUD(int score = 0);
+	WinHUD(Camera* cam, int score = 0);
 	~WinHUD();
 
 	void init();

@@ -5,12 +5,8 @@
 #include "../../game.h"
 #include "../../entity/entityPlane.h"
 
-GameHUD::GameHUD(int* score) {
-	this->camera = new Camera();
-	this->camera->setOrthographic(
-		0, Game::getInstance()->window_width, 
-		0, Game::getInstance()->window_height,
-		-1, 1);
+GameHUD::GameHUD(Camera* cam, int* score) {
+	this->camera = cam;
 	this->health = new Mesh();
 	this->shield = new Mesh();
 	this->crosshair = new Mesh();
@@ -44,6 +40,10 @@ void GameHUD::init() {
 }
    
 void GameHUD::render() {
+	this->camera->setOrthographic(
+		0, Game::getInstance()->window_width, 
+		0, Game::getInstance()->window_height,
+		-1, 1);
 	this->camera->set();
 	Matrix44 mvp = this->camera->viewprojection_matrix;
 	Shader* _s = Shader::Load("data/shaders/color");

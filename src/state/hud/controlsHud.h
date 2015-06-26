@@ -21,7 +21,7 @@ public:
 	Mesh* background;
 	int last_time;
 
-	ControlsHUD();
+	ControlsHUD(Camera* cam);
 	~ControlsHUD();
 
 	void init();

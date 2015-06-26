@@ -6,7 +6,7 @@
 #include "../mainState.h"
 #include "../../sound/soundManager.h"
 
-LoadingHUD::LoadingHUD(bool* ready) {
+LoadingHUD::LoadingHUD(Camera* cam, bool* ready) {
 	if(XBOX360::getInstance()->getNumJoysticks() > 0){
 		this->joystick = XBOX360::getInstance()->openJoystick(0);
 	} else this->joystick = NULL;
@@ -14,11 +14,7 @@ LoadingHUD::LoadingHUD(bool* ready) {
 
 	this->ready = ready;
 
-	this->camera = new Camera();
-	this->camera->setOrthographic(
-		0, Game::getInstance()->window_width, 
-		0, Game::getInstance()->window_height,
-		-1, 1);
+	this->camera = cam;
 	this->progress = new Mesh();
 	this->mission = new Mesh();
 	this->logo = new Mesh();
@@ -40,6 +36,10 @@ void LoadingHUD::init() {
 }
    
 void LoadingHUD::render() {
+	this->camera->setOrthographic(
+		0, Game::getInstance()->window_width, 
+		0, Game::getInstance()->window_height,
+		-1, 1);
 	this->camera->set();
 	Matrix44 mvp = this->camera->viewprojection_matrix;
 	/* Shaders */
@@ -71,7 +71,7 @@ void LoadingHUD::render() {
 	_s2->setMatrix44("u_mvp", mvp );
 	this->printText(
 		(*this->ready) 
-		? "Pulsa Enter / X para empezar!"
+		? "Pulsa Intro / Mando A para empezar!"
 		: "Cargando...", 
 		50, 50);
 	_st->disable();

@@ -7,7 +7,7 @@
 #include "../sound/soundManager.h"
 
 ControlsState::ControlsState() {
-	this->hud = new ControlsHUD();
+	this->hud = new ControlsHUD(this->getCamera());
 	this->hud->init();
 }
 

@@ -40,8 +40,8 @@ public:
 		float _left = left.dot(toPoint);
 		float _up = up.dot(toPoint);
 
-		if(abs(_left) > 0.001) plane->yaw(-_left * 2);
-		if(abs(_up) > 0.001) plane->pitch(_up * 2);
+		if(abs(_left) > 0.0001) plane->yaw(-_left * 2);
+		if(abs(_up) > 0.0001) plane->pitch(_up * 2);
 
 		return dst;
 	}

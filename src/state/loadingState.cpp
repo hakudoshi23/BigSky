@@ -8,7 +8,7 @@
 #include "../sound/soundManager.h"
 
 LoadingState::LoadingState() {
-	this->hud = new LoadingHUD(&this->done);
+	this->hud = new LoadingHUD(this->getCamera(), &this->done);
 	this->hud->init();
 	this->done = false;
 }

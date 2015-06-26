@@ -26,7 +26,7 @@ public:
 	Mesh* pointer;
 	Mesh* logo;
 
-	MenuHUD();
+	MenuHUD(Camera* cam);
 	~MenuHUD();
 
 	void init();

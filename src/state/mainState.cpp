@@ -21,7 +21,7 @@
 
 MainState::MainState() {
 	this->score = 0;
-	this->hud = new GameHUD(&this->score);
+	this->hud = new GameHUD(this->getCamera(), &this->score);
 	this->hud->init();
 	this->update_count = 0;
 	this->player_id = 0;
@@ -69,12 +69,30 @@ void MainState::init() {
 	aic->patroll_points.push_back(Vector3(250, 0, 2000));
 	World::getInstance()->addChild(ep);
 	ep = EntityFactory::newEnemy();
-	ep->model.setTranslation(250, 50, 2000);
+	ep->model.setTranslation(500, 100, 0);
 	aic = (AIController*) ep->controller;
-	aic->patroll_points.push_back(Vector3(750, 50, 2000));
-	aic->patroll_points.push_back(Vector3(750, 50, 1500));
-	aic->patroll_points.push_back(Vector3(250, 50, 1500));
-	aic->patroll_points.push_back(Vector3(250, 50, 2000));
+	aic->patroll_points.push_back(Vector3(0, 200, 0));
+	aic->patroll_points.push_back(Vector3(500, 100, 0));
+	World::getInstance()->addChild(ep);
+	ep = EntityFactory::newEnemy();
+	ep->model.setTranslation(250, 500, 2000);
+	aic = (AIController*) ep->controller;
+	aic->patroll_points.push_back(Vector3(750, 500, 2000));
+	aic->patroll_points.push_back(Vector3(750, 500, 1500));
+	aic->patroll_points.push_back(Vector3(250, 500, 1500));
+	aic->patroll_points.push_back(Vector3(250, 500, 2000));
+	World::getInstance()->addChild(ep);
+	ep = EntityFactory::newEnemy();
+	ep->model.setTranslation(150, 200, 1800);
+	aic = (AIController*) ep->controller;
+	aic->patroll_points.push_back(Vector3(0, 0, 0));
+	aic->patroll_points.push_back(Vector3(150, 200, 1800));
+	World::getInstance()->addChild(ep);
+	ep = EntityFactory::newEnemy();
+	ep->model.setTranslation(300, 180, 1800);
+	aic = (AIController*) ep->controller;
+	aic->patroll_points.push_back(Vector3(300, 0, 0));
+	aic->patroll_points.push_back(Vector3(300, 180, 1800));
 	World::getInstance()->addChild(ep);
 	/* Add asteroids */
 	EntityMesh* em = EntityFactory::newAsteroid(0);
@@ -135,51 +153,59 @@ void MainState::update(double delta) {
 		Vector3 pos = Vector3(em->model.m[12],em->model.m[13],em->model.m[14]);
 		_m->collision_model->setTransform(em->model.m);
 		/* Test collisions - Plane vs Bullet */
-		for (std::vector<Bullet*>::iterator it2 = bullets.begin() ; it2 != bullets.end(); ++it2){
-			if((*it2)->author_id != em->id && _m->collision_model->sphereCollision((*it2)->position.v, 1)){
-				(*it2)->ttl = 0;
-				em->processEvent("damage", &(*it2)->damage);
-				if((*it2)->author_id == this->player_id)
-					this->score += 1;
+		if(this->update_count % 5 == 0){
+			for (std::vector<Bullet*>::iterator it2 = bullets.begin() ; it2 != bullets.end(); ++it2){
+				if((*it2)->author_id != em->id && _m->collision_model->sphereCollision((*it2)->position.v, 1)){
+					(*it2)->ttl = 0;
+					em->processEvent("damage", &(*it2)->damage);
+					if((*it2)->author_id == this->player_id)
+						this->score += 1;
+				}
 			}
 		}
 		/* Test collisions - Plane vs Plane */
-		for (std::vector<Entity*>::iterator it2 = it + 1 ; it2 != planes.end(); ++it2){
-			Vector3 origin = Vector3((*it2)->model.m[12],(*it2)->model.m[13],(*it2)->model.m[14]);
-			if(_m->collision_model->sphereCollision(origin.v, 3)){
-				em->processEvent("damage", &collision_dmg);
-				(*it2)->processEvent("damage", &collision_dmg);
+		if(this->update_count % 5 == 1){
+			for (std::vector<Entity*>::iterator it2 = it + 1 ; it2 != planes.end(); ++it2){
+				Vector3 origin = Vector3((*it2)->model.m[12],(*it2)->model.m[13],(*it2)->model.m[14]);
+				if(_m->collision_model->sphereCollision(origin.v, 3)){
+					em->processEvent("damage", &collision_dmg);
+					(*it2)->processEvent("damage", &collision_dmg);
+				}
 			}
 		}
 		/* Test collisions - Plane vs Terrain */
-		for (std::vector<Entity*>::iterator it2 = terrains.begin() ; it2 != terrains.end(); ++it2){
-			EntityMesh* em2 = (EntityMesh*) (*it2);
-			Mesh* _m2 = Mesh::load(em2->mesh.c_str());
-			_m2->collision_model->setTransform(em2->model.m);
-			if(_m2->collision_model->sphereCollision(pos.v, 3)){
-				em->processEvent("damage", &collision_dmg);
+		if(this->update_count % 5 == 2){
+			for (std::vector<Entity*>::iterator it2 = terrains.begin() ; it2 != terrains.end(); ++it2){
+				EntityMesh* em2 = (EntityMesh*) (*it2);
+				Mesh* _m2 = Mesh::load(em2->mesh.c_str());
+				_m2->collision_model->setTransform(em2->model.m);
+				if(_m2->collision_model->sphereCollision(pos.v, 3)){
+					em->processEvent("damage", &collision_dmg);
+				}
 			}
 		}
 		/* Test collisions - Plane vs Frigate */
 		if(frigate != NULL){
 			Mesh* fMesh = Mesh::load(frigate->mesh.c_str());
 			fMesh->collision_model->setTransform(frigate->model.m);
-			if(fMesh->collision_model->sphereCollision(pos.v, 3)){
+			if(fMesh->collision_model->sphereCollision(pos.v, 2)){
 				em->processEvent("damage", &collision_dmg);
 			}
 		}
 		/* Test collisions - Plane vs Missile */
-		EntityMissile* miss;
-		for (std::vector<Entity*>::iterator it = missiles.begin() ; it != missiles.end(); ++it){
-			miss = (EntityMissile*) (*it);
-			Vector3 origin = Vector3(miss->model.m[12], miss->model.m[13], miss->model.m[14]);
-			if(_m->collision_model->sphereCollision(origin.v, 2)){
-				em->processEvent("damage", &miss->dmg);
-				miss->processEvent("destroy");
-				if(em->id != this->player_id)
-					this->score += 20;
-			}else if(miss->ttl <= 0)
-				miss->processEvent("destroy");
+		if(this->update_count % 5 == 4){
+			EntityMissile* miss;
+			for (std::vector<Entity*>::iterator it = missiles.begin() ; it != missiles.end(); ++it){
+				miss = (EntityMissile*) (*it);
+				Vector3 origin = Vector3(miss->model.m[12], miss->model.m[13], miss->model.m[14]);
+				if(_m->collision_model->sphereCollision(origin.v, 2)){
+					em->processEvent("damage", &miss->dmg);
+					miss->processEvent("destroy");
+					if(em->id != this->player_id)
+						this->score += 20;
+				}else if(miss->ttl <= 0)
+					miss->processEvent("destroy");
+			}
 		}
 	}
 }

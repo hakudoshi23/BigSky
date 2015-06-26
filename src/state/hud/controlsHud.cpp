@@ -6,17 +6,13 @@
 #include "../menuState.h"
 #include "../../sound/soundManager.h"
 
-ControlsHUD::ControlsHUD() {
+ControlsHUD::ControlsHUD(Camera* cam) {
 	if(XBOX360::getInstance()->getNumJoysticks() > 0){
 		this->joystick = XBOX360::getInstance()->openJoystick(0);
 	} else this->joystick = NULL;
 	this->keystate = NULL;
 
-	this->camera = new Camera();
-	this->camera->setOrthographic(
-		0, Game::getInstance()->window_width, 
-		0, Game::getInstance()->window_height,
-		-1, 1);
+	this->camera = cam;
 	this->background = new Mesh();
 }
 
@@ -37,6 +33,10 @@ void ControlsHUD::init() {
 }
    
 void ControlsHUD::render() {
+	this->camera->setOrthographic(
+		0, Game::getInstance()->window_width, 
+		0, Game::getInstance()->window_height,
+		-1, 1);
 	this->camera->set();
 	Matrix44 mvp = this->camera->viewprojection_matrix;
 	/* Shaders */
@@ -57,7 +57,7 @@ void ControlsHUD::render() {
 	/* Render text */
 	_st->enable();
 	_s2->setMatrix44("u_mvp", mvp );
-	this->printText("Pulsa Enter / X para volver al Menu", 50, 50);
+	this->printText("Pulsa Intro / Mando A para volver al Menu", 50, 50);
 	_st->disable();
 	glDepthMask(GL_TRUE);
 }

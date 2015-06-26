@@ -24,8 +24,6 @@ public:
     float time;
 
 	bool mouse_locked;
-	
-	Camera* camera;
 
 	Game();
 	void init( void );

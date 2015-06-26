@@ -15,12 +15,12 @@ EntityPlane::EntityPlane(std::string name) : EntityMesh(name) {
 	this->controller = NULL;
 	this->missile_cd = 2;
 	this->shoot_cd = 0.2f;
-	this->bullet_dmg = 10;
-	this->max_health = 70;
+	this->bullet_dmg = 15;
+	this->max_health = 12;
 	this->health = this->max_health;
-	this->max_shield = 20;
+	this->max_shield = 30;
 	this->shield = this->max_shield;
-	this->shield_regen = 5;
+	this->shield_regen = 2;
 }
 
 EntityPlane::~EntityPlane() {

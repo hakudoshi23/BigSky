@@ -7,7 +7,7 @@
 #include "../sound/soundManager.h"
 
 MenuState::MenuState() {
-	this->hud = new MenuHUD();
+	this->hud = new MenuHUD(this->getCamera());
 	this->hud->init();
 }
 
@@ -16,7 +16,7 @@ MenuState::~MenuState() {
 }
 
 void MenuState::init() {
-	glClearColor(0.623529, 0.752941, 0.796078, 1.0);
+	glClearColor(0, 0, 0, 1);
 	SoundManager::getInstance()->playSound("data/sound/main_menu_bg.wav", 0, true, 0.5f);
 }
    

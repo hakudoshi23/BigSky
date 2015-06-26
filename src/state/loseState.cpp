@@ -7,7 +7,7 @@
 #include "../sound/soundManager.h"
 
 LoseState::LoseState() {
-	this->hud = new LoseHUD();
+	this->hud = new LoseHUD(this->getCamera());
 	this->hud->init();
 }
 

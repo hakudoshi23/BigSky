@@ -24,7 +24,7 @@ public:
 	Mesh* mission;
 	Mesh* logo;
 
-	LoadingHUD(bool* ready);
+	LoadingHUD(Camera* cam, bool* ready);
 	~LoadingHUD();
 
 	void init();

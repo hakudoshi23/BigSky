@@ -10,6 +10,11 @@ public:
 	virtual void render() = 0;
 	virtual void update(double delta) = 0;
 	virtual void destroy() = 0;
+
+	static Camera* getCamera(){
+		static Camera* cam = new Camera();
+		return cam;
+	}
 };
 
 

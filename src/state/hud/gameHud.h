@@ -20,7 +20,7 @@ public:
 	Mesh* pointers;
 	int* score;
 
-	GameHUD(int* score);
+	GameHUD(Camera* cam, int* score);
 	~GameHUD();
 
 	void init();

@@ -22,15 +22,16 @@ EntityPlane* EntityFactory::newEnemy() {
 
 EntityPlane* EntityFactory::newPlayer() {
 	EntityPlane* e = new EntityPlane("player");
+	e->max_move->set(0.01, 0.03, 0.02);
 	e->setMesh("data/mesh/x3_fighter/x3_fighter.ASE");
 	e->setTexture("data/mesh/x3_fighter/x3_fighter.tga");
 	e->setShader("data/shaders/phong");
 	e->tags.push_back("player");
 	e->tags.push_back("plane");
 
-	e->max_health = 200;
+	e->max_health = 150;
 	e->health = e->max_health;
-	e->max_shield = 100;
+	e->max_shield = 50;
 	e->shield = e->max_shield;
 
 	PlayerController* c = new PlayerController();

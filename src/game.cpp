@@ -57,12 +57,12 @@ void Game::setWindowSize(int width, int height) {
     std::cout << "window resized: " << width << "," << height << std::endl;
     
     Uint32 flags = SDL_GetWindowFlags(window);
-    if(flags & SDL_WINDOW_ALLOW_HIGHDPI) {
+    /*if(flags & SDL_WINDOW_ALLOW_HIGHDPI) {
         width *= 2;
         height *= 2;
-    }
+    }*/
 	glViewport( 0,0, width, height );
-	camera->aspect =  width / (float)height;
+	World::getInstance()->camera->aspect = width / (float) height;
 	window_width = width;
 	window_height = height;
 }

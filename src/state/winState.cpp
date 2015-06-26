@@ -7,7 +7,7 @@
 #include "../sound/soundManager.h"
 
 WinState::WinState(int score) {
-	this->hud = new WinHUD(score);
+	this->hud = new WinHUD(this->getCamera(), score);
 	this->hud->init();
 }
 
