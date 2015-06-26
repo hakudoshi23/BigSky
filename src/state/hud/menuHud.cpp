@@ -89,6 +89,8 @@ void MenuHUD::render() {
 	/* Render text */
 	_st->enable();
 	_s2->setMatrix44("u_mvp", mvp );
+	this->printText("v0.9a",
+		Game::getInstance()->window_width - 70, 20);
 	int posY = Game::getInstance()->window_height - this->y_offset, 
 		posX = Game::getInstance()->window_width - this->x_offset;
 	for(int i = 0; i < this->options.size(); i++){

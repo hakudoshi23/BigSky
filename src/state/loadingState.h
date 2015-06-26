@@ -10,6 +10,7 @@ class LoadingState : public GameState
 {
 public:
 	HUD* hud;
+	bool done;
 
 	LoadingState();
 	~LoadingState();

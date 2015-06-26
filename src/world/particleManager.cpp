@@ -56,8 +56,6 @@ void ParticleManager::render(){
 		this->mesh->colors.push_back( c );
 		this->mesh->colors.push_back( c );
 		this->mesh->colors.push_back( c );
-		this->mesh->colors.push_back( c );
-		this->mesh->colors.push_back( c );
 	}
 	if(this->mesh->vertices.size() > 0 && last_texture != ""){
 		_t = Texture::load(last_texture.c_str());

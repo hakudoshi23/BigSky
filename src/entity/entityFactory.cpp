@@ -70,6 +70,7 @@ EntityMesh* EntityFactory::newAsteroid(int type) {
 	e->setTexture("data/mesh/asteroid/asteroide.tga");
 	e->setShader("data/shaders/phong");
 	e->tags.push_back("asteroid");
+	e->tags.push_back("terrain");
 	e->frustum_culling = false;
 	return e;
 }
@@ -79,6 +80,7 @@ EntityMesh* EntityFactory::newPlanet() {
 	e->setMesh("data/mesh/planet/sphere.ASE");
 	e->setTexture("data/mesh/planet/craters.tga");
 	e->setShader("data/shaders/phong");
+	e->tags.push_back("terrain");
 	e->tags.push_back("planet");
 	e->frustum_culling = false;
 

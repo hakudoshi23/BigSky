@@ -13,7 +13,7 @@ public:
 	Controller* controller;
 	Vector3* max_move;
 
-	float dmg;
+	float dmg, ttl;
 
 	EntityMissile();
 	~EntityMissile();

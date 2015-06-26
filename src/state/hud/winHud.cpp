@@ -6,11 +6,13 @@
 #include "../menuState.h"
 #include "../../sound/soundManager.h"
 
-WinHUD::WinHUD() {
+WinHUD::WinHUD(int score) {
 	if(XBOX360::getInstance()->getNumJoysticks() > 0){
 		this->joystick = XBOX360::getInstance()->openJoystick(0);
 	} else this->joystick = NULL;
 	this->keystate = NULL;
+
+	this->score = score;
 
 	this->camera = new Camera();
 	this->camera->setOrthographic(
@@ -60,6 +62,8 @@ void WinHUD::render() {
 	_st->enable();
 	_s2->setMatrix44("u_mvp", mvp );
 	this->printText("Pulsa Intro / X para continuar...", 50, 50);
+	this->printText("Puntos: " + std::to_string(this->score), 
+		Game::getInstance()->window_width / 2.2, 150);
 	_st->disable();
 	glDepthMask(GL_TRUE);
 }

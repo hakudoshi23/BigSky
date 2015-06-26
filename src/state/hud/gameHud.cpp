@@ -5,7 +5,7 @@
 #include "../../game.h"
 #include "../../entity/entityPlane.h"
 
-GameHUD::GameHUD() {
+GameHUD::GameHUD(int* score) {
 	this->camera = new Camera();
 	this->camera->setOrthographic(
 		0, Game::getInstance()->window_width, 
@@ -15,6 +15,7 @@ GameHUD::GameHUD() {
 	this->shield = new Mesh();
 	this->crosshair = new Mesh();
 	this->pointers = new Mesh();
+	this->score = score;
 }
 
 GameHUD::~GameHUD() {
@@ -50,6 +51,7 @@ void GameHUD::render() {
 	Shader* _st = Shader::Load("data/shaders/text");
 	Texture* _r = Texture::load("data/textures/reticule_r.tga");
 	Texture* _ch = Texture::load("data/textures/crosshair.tga");
+	glDepthMask(GL_FALSE);
 	/* Render with colors */
 	_s->enable();
 	_s->setMatrix44("u_mvp", mvp );
@@ -60,7 +62,6 @@ void GameHUD::render() {
 	_s2->enable();
 	_s2->setMatrix44("u_mvp", mvp );
 	glEnable(GL_BLEND);
-	glDepthMask(GL_FALSE);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	_s2->setTexture("u_texture", _ch->texture_id);
 	this->crosshair->render(GL_TRIANGLE_STRIP, _s2);
@@ -68,9 +69,15 @@ void GameHUD::render() {
 		_s2->setTexture("u_texture", _r->texture_id);
 		this->pointers->render(GL_TRIANGLES, _s2);
 	}
-	glDepthMask(GL_TRUE);
 	glDisable(GL_BLEND);
 	_s2->disable();
+	/* Render text */
+	_st->enable();
+	_s2->setMatrix44("u_mvp", mvp );
+	this->printText("Puntos: " + std::to_string(*this->score), 
+		20, Game::getInstance()->window_height - 100);
+	_st->disable();
+	glDepthMask(GL_TRUE);
 }
 
 void GameHUD::update(double delta) {

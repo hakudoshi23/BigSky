@@ -37,6 +37,10 @@ void World::update(double delta) {
 	/* Free unused entities */
 	if(this->toDestroy.size() > 0){
 		for (std::vector<Entity*>::iterator it = this->toDestroy.begin() ; it != this->toDestroy.end();){
+			if((*it)->parent != NULL){
+				std::map<int, Entity*>::iterator _it = (*it)->parent->children.find((*it)->id);
+				if(_it != (*it)->parent->children.end()) (*it)->parent->children.erase(_it);
+			}
 			delete (*it);
 			it = this->toDestroy.erase(it);
 		}
@@ -50,12 +54,8 @@ void World::processEvent(std::string name, void* data) {
 
 void World::destroy(Entity* entity){
 	std::map<int, Entity*>::iterator it;
-	while((it = entity->children.begin()) != entity->children.end())
+	for(it = entity->children.begin(); it != entity->children.end(); ++it)
 		this->destroy(it->second);
-	if(entity->parent != NULL){
-		it = entity->parent->children.find(entity->id);
-		if(it != entity->parent->children.end()) entity->parent->children.erase(it);
-	}
 	for (std::vector<Entity*>::iterator it = this->toDestroy.begin() ; it != this->toDestroy.end(); ++it)
 		if((*it)->id == entity->id) return;
 	this->toDestroy.push_back(entity);
@@ -63,7 +63,7 @@ void World::destroy(Entity* entity){
 
 void World::destroy(){
 	std::map<int, Entity*>::iterator it;
-	while((it = this->children.begin()) != this->children.end())
+	for(it = this->children.begin(); it != this->children.end(); ++it)
 		this->destroy(it->second);
 }
 

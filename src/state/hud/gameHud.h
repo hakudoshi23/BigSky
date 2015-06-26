@@ -18,8 +18,9 @@ public:
 	Mesh* crosshair;
 
 	Mesh* pointers;
+	int* score;
 
-	GameHUD();
+	GameHUD(int* score);
 	~GameHUD();
 
 	void init();

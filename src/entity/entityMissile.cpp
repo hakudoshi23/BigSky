@@ -22,6 +22,7 @@ EntityMissile::EntityMissile() : EntityMesh("missile") {
 	this->shader = "data/shaders/phong";
 
 	this->dmg = 200;
+	this->ttl = 5;
 }
 
 EntityMissile::~EntityMissile() {
@@ -36,6 +37,7 @@ void EntityMissile::processEvent(std::string name, void* data) {
 		EntityParticle* ep = new EntityParticle();
 		ep->texture = "data/textures/smoke.tga";
 		ep->model = this->model;
+		ep->entity_ttl = 3;
 		ep->freq = 0.1f;
 		ep->random = 5;
 		ep->size = 10;
@@ -43,6 +45,7 @@ void EntityMissile::processEvent(std::string name, void* data) {
 		World::getInstance()->destroy(this);
 	} else if(name.compare("update") == 0){
 		double delta = *(double*)data;
+		this->ttl -= delta;
 		/* Update controller (move) */
 		if(this->controller != NULL)
 			this->controller->update(delta);

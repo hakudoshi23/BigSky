@@ -13,7 +13,7 @@
 EntityPlane::EntityPlane(std::string name) : EntityMesh(name) {
 	this->max_move = new Vector3(0.005, 0.03, 0.01);
 	this->controller = NULL;
-	this->missile_cd = 0.2f;
+	this->missile_cd = 2;
 	this->shoot_cd = 0.2f;
 	this->bullet_dmg = 10;
 	this->max_health = 70;
@@ -84,8 +84,9 @@ bool EntityPlane::shootBullet(){
 bool EntityPlane::shootMissile(){
 	if(Game::getInstance()->time - this->last_missile > this->missile_cd){
 		EntityMissile* m = new EntityMissile();
-		m->model.scale(0.3, 0.3, 0.3);
 		m->model = this->model;
+		Vector3 f = m->model.rotateVector(Vector3(0, 0, 10));
+		m->model.traslate(f.x, f.y, f.z);
 		World::getInstance()->addChild(m);
 		this->last_missile = Game::getInstance()->time;
 		return true;

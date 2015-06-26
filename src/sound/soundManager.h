@@ -18,6 +18,7 @@ public:
 	void playSound(std::string sound);
 	void playSound(std::string sound, int freq_delta);
 	void playSound(std::string sound, int freq_delta, bool loop);
+	void playSound(std::string sound, int freq_delta, bool loop, float volume);
 
 	void play();
 	void pause();

@@ -35,7 +35,8 @@ void MissileController::update(double delta){
 			}
 		}else{
 			Entity* e = World::getInstance()->findByID(this->target_id);
-			this->chase(Vector3(e->model.m[12], e->model.m[13], e->model.m[14]));
+			if(e != NULL)
+				this->chase(Vector3(e->model.m[12], e->model.m[13], e->model.m[14]));
 		}
 	}
 }

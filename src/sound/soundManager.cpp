@@ -20,6 +20,10 @@ void SoundManager::playSound(std::string sound, int freq_delta){
 }
 
 void SoundManager::playSound(std::string sound, int freq_delta, bool loop){
+	this->playSound(sound, freq_delta, loop, 1.0f);
+}
+
+void SoundManager::playSound(std::string sound, int freq_delta, bool loop, float volume){
 	this->play();
 
 	HSAMPLE sample;
@@ -33,6 +37,7 @@ void SoundManager::playSound(std::string sound, int freq_delta, bool loop){
 
 	BASS_SAMPLE info;
 	BASS_SampleGetInfo(sample, &info);
+	info.volume = volume;
 	info.freq = 44100 + delta;
 	info.flags = loop ? BASS_SAMPLE_LOOP : 0;
 	BASS_SampleSetInfo(sample, &info);

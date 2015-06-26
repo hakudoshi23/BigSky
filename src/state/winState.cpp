@@ -6,8 +6,8 @@
 #include "hud/winHud.h"
 #include "../sound/soundManager.h"
 
-WinState::WinState() {
-	this->hud = new WinHUD();
+WinState::WinState(int score) {
+	this->hud = new WinHUD(score);
 	this->hud->init();
 }
 

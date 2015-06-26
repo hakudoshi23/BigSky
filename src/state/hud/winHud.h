@@ -20,9 +20,9 @@ public:
 	
 	Mesh* title;
 	Mesh* text;
-	int last_time;
+	int last_time, score;
 
-	WinHUD();
+	WinHUD(int score = 0);
 	~WinHUD();
 
 	void init();

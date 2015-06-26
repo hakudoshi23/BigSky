@@ -187,8 +187,12 @@ void Mesh::buildCollisionModel(){
 	int size = this->vertices.size();
 	this->collision_model = newCollisionModel3D();
 	this->collision_model->setTriangleNumber(size / 3);
-	for(int i = 0; i < size; i++){
-		this->collision_model->addTriangle(&this->vertices[i].x, &this->vertices[i].y, &this->vertices[i].z);
+	for(int i = 0; i < size; i+=3){
+		this->collision_model->addTriangle(
+			this->vertices[i+0].x, this->vertices[i+0].y, this->vertices[i+0].z,
+			this->vertices[i+1].x, this->vertices[i+1].y, this->vertices[i+1].z,
+			this->vertices[i+2].x, this->vertices[i+2].y, this->vertices[i+2].z
+		);
 	}
 	this->collision_model->finalize();
 }

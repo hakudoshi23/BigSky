@@ -6,13 +6,13 @@
 #include "../mainState.h"
 #include "../../sound/soundManager.h"
 
-LoadingHUD::LoadingHUD() {
+LoadingHUD::LoadingHUD(bool* ready) {
 	if(XBOX360::getInstance()->getNumJoysticks() > 0){
 		this->joystick = XBOX360::getInstance()->openJoystick(0);
 	} else this->joystick = NULL;
 	this->keystate = NULL;
 
-	this->ready = false;
+	this->ready = ready;
 
 	this->camera = new Camera();
 	this->camera->setOrthographic(
@@ -20,6 +20,7 @@ LoadingHUD::LoadingHUD() {
 		0, Game::getInstance()->window_height,
 		-1, 1);
 	this->progress = new Mesh();
+	this->mission = new Mesh();
 	this->logo = new Mesh();
 }
 
@@ -34,6 +35,7 @@ LoadingHUD::~LoadingHUD() {
 
 void LoadingHUD::init() {
 	this->setQuad(this->progress, 500, 30, 0.5f, 0.2f);
+	this->setQuad(this->mission, 512, 128, 0.5f, 0.5f);
 	this->setQuad(this->logo, 512, 128, 0.5f, 0.8f);
 }
    
@@ -46,6 +48,7 @@ void LoadingHUD::render() {
 	Shader* _st = Shader::Load("data/shaders/text");
 	/* Textures */
 	Texture* l = Texture::load("data/textures/mainMenu/logo_alpha.tga");
+	Texture* m = Texture::load("data/textures/mission.tga");
 	glDepthMask(GL_FALSE);
 	/* Render with colors */
 	_s->enable();
@@ -59,12 +62,17 @@ void LoadingHUD::render() {
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	_s2->setTexture("u_texture", l->texture_id);
 	this->logo->render(GL_TRIANGLE_STRIP, _s2);
+	_s2->setTexture("u_texture", m->texture_id);
+	this->mission->render(GL_TRIANGLE_STRIP, _s2);
 	glDisable(GL_BLEND);
 	_s2->disable();
 	/* Render text */
 	_st->enable();
 	_s2->setMatrix44("u_mvp", mvp );
-	this->printText(this->ready ? "Pulsa Enter / X para empezar!" : "Cargando...", 
+	this->printText(
+		(*this->ready) 
+		? "Pulsa Enter / X para empezar!"
+		: "Cargando...", 
 		50, 50);
 	_st->disable();
 	glDepthMask(GL_TRUE);
@@ -74,7 +82,7 @@ void LoadingHUD::update(double delta) {
 	JoystickState state = XBOX360::getInstance()->getJoystickState(this->joystick);
 	this->keystate = SDL_GetKeyboardState(NULL);
 
-	if(this->ready){
+	if(*this->ready){
 		if(this->keystate[SDL_SCANCODE_E] || this->keystate[SDL_SCANCODE_RETURN] || state.button[10]) {
 			Game::swapState(new MainState());
 		}

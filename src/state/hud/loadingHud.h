@@ -18,12 +18,13 @@ public:
 	SDL_Joystick* joystick;
 	const Uint8* keystate;
 
-	bool ready;
+	bool* ready;
 
 	Mesh* progress;
+	Mesh* mission;
 	Mesh* logo;
 
-	LoadingHUD();
+	LoadingHUD(bool* ready);
 	~LoadingHUD();
 
 	void init();

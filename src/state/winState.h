@@ -11,7 +11,7 @@ class WinState : public GameState
 public:
 	HUD* hud;
 
-	WinState();
+	WinState(int score = 0);
 	~WinState();
 
 	void init();

@@ -65,7 +65,7 @@ void PlayerController::update(double delta){
 		/* Shoot bullets! */
 		if(keystate[SDL_SCANCODE_SPACE] || state.button[10]) {
 			if(plane->shootBullet()) 
-				SoundManager::getInstance()->playSound("data/sound/player_default_weapon.wav", 3000);
+				SoundManager::getInstance()->playSound("data/sound/player_default_weapon.wav", 3000, false, 0.5f);
 		}
 		/* Shoot missile! */
 		if(keystate[SDL_SCANCODE_F] || state.button[12]) {

@@ -10,7 +10,7 @@ class MainState : public GameState
 {
 public:
 	HUD* hud;
-	int player_id, update_count;
+	int player_id, update_count, score;
 
 	MainState();
 	~MainState();

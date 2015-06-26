@@ -33,8 +33,9 @@ Entity* Entity::getParent() {
 }
 
 void Entity::processEvent(std::string name, void* data) {
-	for(std::map<int, Entity*>::iterator it = children.begin(); it != children.end(); it++)
+	for(std::map<int, Entity*>::iterator it = children.begin(); it != children.end(); it++){
 		it->second->processEvent(name, data);
+	}
 }
 
 Entity* Entity::findByID(int id) {

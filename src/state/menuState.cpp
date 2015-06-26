@@ -17,7 +17,7 @@ MenuState::~MenuState() {
 
 void MenuState::init() {
 	glClearColor(0.623529, 0.752941, 0.796078, 1.0);
-	SoundManager::getInstance()->playSound("data/sound/main_menu_bg.wav", 0, true);
+	SoundManager::getInstance()->playSound("data/sound/main_menu_bg.wav", 0, true, 0.5f);
 }
    
 void MenuState::render() {
